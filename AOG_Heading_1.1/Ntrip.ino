@@ -16,7 +16,7 @@ void connectToNtrip_Eth() {
         Serial.print(" Buffer by Ethernet : ");
         Serial.println(buffer);
       }
-    Serial.print("Requesting SourceTable is OK  by Ethernet\n");
+      Serial.print("Requesting SourceTable is OK  by Ethernet\n");
     }
     else {
       Serial.println("SourceTable request error");
@@ -26,7 +26,7 @@ void connectToNtrip_Eth() {
     delay(1000);
     Serial.println("Requesting MountPoint's Raw data by Ethernet");
     //
-      delay(1000);
+    delay(1000);
     if (!ntrip_e.reqRaw(Ntrip_host, Ntrip_httpPort, Ntrip_mntpnt, Ntrip_user, Ntrip_passwd)) {
       Serial.println("no ntrip connection by Ethernet");
       Serial.println(" ");
@@ -60,7 +60,7 @@ void connectToNtrip_WiFi() {
         Serial.print(" Buffer: ");
         Serial.println(buffer);
       }
-    Serial.print("Requesting SourceTable is OK\n");
+      Serial.print("Requesting SourceTable is OK\n");
     }
     else {
       Serial.println("SourceTable request error");
@@ -94,11 +94,11 @@ void sendGGA_WiFi() {
   GGASatz_send_back = "$GPGGA,";
   (GGASatz_send_back.concat(GGA_time));
   (GGASatz_send_back.concat("0,"));
-  (GGASatz_send_back.concat(GGAnord.substring(0,8)));
+  (GGASatz_send_back.concat(GGAnord.substring(0, 8)));
   (GGASatz_send_back.concat(BS));
   (GGASatz_send_back.concat(GGANordSued));
   (GGASatz_send_back.concat(BS));
-  (GGASatz_send_back.concat(GGAeast.substring(0,9)));
+  (GGASatz_send_back.concat(GGAeast.substring(0, 9)));
   (GGASatz_send_back.concat(BS));
   (GGASatz_send_back.concat(GGAWestEast));
   (GGASatz_send_back.concat(",1,12,1.0,0.0,M,0.0,M,,*"));
@@ -117,7 +117,7 @@ void sendGGA_WiFi() {
   if ((GGA_Send_Back_Time != 0) && ((millis() - startSend_back_Time) > (GGA_Send_Back_Time * 1000))) {  // send back GGA to Ntripserver
     ntrip_c.print(GGASatz_send_back);
     ntrip_c.print("\r\n");
-    //    Serial.println(GGASatz_send_back);
+    //  Serial.println(GGASatz_send_back);
     startSend_back_Time = millis();
   }
 } // end sendGGA_WiFi
@@ -129,11 +129,11 @@ void sendGGA_Eth() {
   GGASatz_send_back = "$GPGGA,";
   (GGASatz_send_back.concat(GGA_time));
   (GGASatz_send_back.concat("0,"));
-  (GGASatz_send_back.concat(GGAnord.substring(0,8)));
+  (GGASatz_send_back.concat(GGAnord.substring(0, 8)));
   (GGASatz_send_back.concat(BS));
   (GGASatz_send_back.concat(GGANordSued));
   (GGASatz_send_back.concat(BS));
-  (GGASatz_send_back.concat(GGAeast.substring(0,9)));
+  (GGASatz_send_back.concat(GGAeast.substring(0, 9)));
   (GGASatz_send_back.concat(BS));
   (GGASatz_send_back.concat(GGAWestEast));
   (GGASatz_send_back.concat(",1,12,1.0,0.0,M,0.0,M,,*"));
@@ -155,7 +155,7 @@ void sendGGA_Eth() {
     //  Serial.println(GGASatz_send_back);
     startSend_back_Time = millis();
   }
-} // end sendGGA_WiFi
+} // end sendGGA_Eth
 
 //doEthUDPNtrip---------------------------------------------------------------------------------------------
 

@@ -111,13 +111,13 @@ void PAOGI1_builder() {
   else  {
     //    Paogi_Shit1++;
     Paogi_true_UBX = true;
-    Serial.println(" ");
+/*    Serial.println(" ");
     Serial.println(" ");
     Serial.println(RollHeadingshit);
     Serial.println("Shit ist Sch.. " + String(Paogi_Long));
     Serial.println(" ");
     Serial.println(" ");
-
+*/
   }
   if (send_amatron_nmea == 1) {
     GGASatz_Korr.replace(GGAnord, NScoordinaten);

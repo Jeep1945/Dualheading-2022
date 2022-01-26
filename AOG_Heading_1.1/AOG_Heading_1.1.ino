@@ -43,7 +43,7 @@ int rollaktiv = 0;     // 0: roll in AOG  1: roll activated in Dualheading
 
 int send_Data_Via = 0;       // send Data via  0: USB, 1: Ethernet, 2: WiFi with router and Ntrip from AOG
 
-int Ntriphotspot = 0;  // 0: Ntrip from AOG(USB or by Ethernet)   1: Ntrip by Ethernet via Router
+int Ntriphotspot = 2;  // 0: Ntrip from AOG(USB or by Ethernet)   1: Ntrip by Ethernet via Router
 //                        2: Ntrip by WiFi via Hotspot or Router  3: Ntrip by WiFi via Router from AOG
 
 //  if router exists, use 1. Network for him
@@ -405,6 +405,13 @@ void loop() {
     doEthUDPNtrip();  // If RTCM3 comes in received by Ethernet from AOG
   }
 
+  // If RTCM3 comes in received by WiFi from Router ####################################
+  if ((send_Data_Via == 0) && (Ntriphotspot == 2)) { //  Ntrip_begin_Time
+    if (ntrip_c.available()) {         // If RTCM3 comes in received by WIFI
+      Serial1.write(ntrip_c.read());   // read RTCM3  and send from ESP32 16 to simpleRTK RX 1. Antenna = RTCM
+    }
+  }
+
   // If RTCM3 comes in received by Ethernet from Router ####################################
   if ((send_Data_Via == 1) && (Ntriphotspot == 1) && (ntrip_from_AgopenGPS == 0) && (Ethernet_running)) { //  Ntrip_begin_Time
     if (ntrip_e.available()) {         // If RTCM3 comes in received by WIFI
@@ -438,7 +445,7 @@ void loop() {
   }
 
   //  Send GGA MSG back to Base     ###########################################################################
-  if ((GGA_Send_Back_Time != 0) && (send_Data_Via == 2))  sendGGA_WiFi();
+  if ((GGA_Send_Back_Time != 0) && ((send_Data_Via == 2) || (Ntriphotspot == 2)))  sendGGA_WiFi();
   if ((GGA_Send_Back_Time != 0) && (Ntriphotspot == 0))  sendGGA_Eth();
 
   //  read UBX msg from F9P (heading)    ######################################################################
