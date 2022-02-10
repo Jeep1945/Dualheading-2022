@@ -81,7 +81,7 @@ void PAOGI1_builder() {
   Paogi_Long = RollHeadingrest.length();
   // Serial.println(Paogi_Long);
 
-//  Paogicheck();
+  //  Paogicheck();
 
   if (Paogi_true_UBX)
   {
@@ -107,17 +107,29 @@ void PAOGI1_builder() {
         lastTime = millis();
       }
     }
+    if (send_Data_Via == 2) {
+      Bytelaenge = Paogi_Long + 1;
+      RollHeadingrest.getBytes(ReplyBufferPAOGI, Bytelaenge);
+      ReplyBufferPAOGI[Bytelaenge - 1] = 0x0D;
+      ReplyBufferPAOGI[Bytelaenge] = 0x0A;
+      udpRoof.writeTo(ReplyBufferPAOGI, Bytelaenge + 1, ipDestination1, portDestination);
+      if ((millis() - lastTime) > 10000) {
+        //        Serial.println(" I´m still running " + String(millis() / 1000) + "0 Sekunden");
+        Serial.println(RollHeadingrest);
+        lastTime = millis();
+      }
+    }
   }
   else  {
     //    Paogi_Shit1++;
     Paogi_true_UBX = true;
-/*    Serial.println(" ");
-    Serial.println(" ");
-    Serial.println(RollHeadingshit);
-    Serial.println("Shit ist Sch.. " + String(Paogi_Long));
-    Serial.println(" ");
-    Serial.println(" ");
-*/
+    /*    Serial.println(" ");
+        Serial.println(" ");
+        Serial.println(RollHeadingshit);
+        Serial.println("Shit ist Sch.. " + String(Paogi_Long));
+        Serial.println(" ");
+        Serial.println(" ");
+    */
   }
   if (send_amatron_nmea == 1) {
     GGASatz_Korr.replace(GGAnord, NScoordinaten);

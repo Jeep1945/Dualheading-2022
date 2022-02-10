@@ -1,5 +1,5 @@
 
-String VERS = "Version AOG_Heading_1.1_19.01.2022";
+String VERS = "Version AOG_Heading_1.1_10.02.2022";
 
 // Dualhead for AGopenGPS
 // Private-use only! (you need to ask for a commercial-use)
@@ -23,7 +23,7 @@ String VERS = "Version AOG_Heading_1.1_19.01.2022";
 // rollaktiv is 0, is done in AOG, so Antenna offset and hight is to do in AOG
 // GGA_Send_Back_Time for SAPOS or Apos set to 10,
 ///by Fix "OGI", Heading GPS "Dual"
-//  IMPORTANT  // For serial USB 38400 baude not 115400
+//  IMPORTANT  // serial USB baude changed to 115400
 //  IMPORTANT  // you have to use the new PVT config
 
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -41,9 +41,9 @@ int rollaktiv = 0;     // 0: roll in AOG  1: roll activated in Dualheading
 //  IMPORTANT  // For serial USB 38400 baude not 115400
 // you have to use the new PVT config
 
-int send_Data_Via = 0;       // send Data via  0: USB, 1: Ethernet, 2: WiFi with router and Ntrip from AOG
+int send_Data_Via = 2;       // send Data via  0: USB, 1: Ethernet, 2: WiFi with router and Ntrip from AOG
 
-int Ntriphotspot = 2;  // 0: Ntrip from AOG(USB or by Ethernet)   1: Ntrip by Ethernet via Router
+int Ntriphotspot = 3;  // 0: Ntrip from AOG(USB or by Ethernet)   1: Ntrip by Ethernet via Router
 //                        2: Ntrip by WiFi via Hotspot or Router  3: Ntrip by WiFi via Router from AOG
 
 //  if router exists, use 1. Network for him
@@ -371,7 +371,7 @@ void loop() {
     (my_WiFi_Mode = 0);
   }
   buttonState = digitalRead(Button_ReScan);
-  if ((buttonState == 0) && (ntrip_from_AgopenGPS == 0)) {
+  if ((buttonState == 0) && (ntrip_from_AgopenGPS == 0) && (Ntriphotspot > 1)) {
     WiFi.mode(WIFI_OFF);
     digitalWrite(LED_ntrip_ON, LOW);
     Network_built_up();
@@ -403,6 +403,7 @@ void loop() {
   //   if ((send_Data_Via == 1) && (Ntriphotspot == 0)
   if ((Ethernet_running) && (Ntriphotspot == 0)) {
     doEthUDPNtrip();  // If RTCM3 comes in received by Ethernet from AOG
+
   }
 
   // If RTCM3 comes in received by WiFi from Router ####################################

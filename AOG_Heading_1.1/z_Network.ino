@@ -27,7 +27,7 @@ void scan_WiFi_connections()
       if (WiFi.SSID(i) == WIFI_Network1) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 1;
+        WiFi_netw_nr = 7;
       }
       if (WiFi.SSID(i) == WIFI_Network2) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
@@ -57,7 +57,7 @@ void scan_WiFi_connections()
       if (WiFi.SSID(i) == WIFI_Network7) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 7;
+        WiFi_netw_nr = 1;
       }
     }
   }
@@ -107,17 +107,17 @@ void connectToWiFi() {
     if (WiFi.status() == WL_CONNECTED) {
       delay(200);
       Serial.println();
-      Serial.print("WiFi Client successfully connected to : ");
+      Serial.println("WiFi Client successfully connected to : ");
       // Serial.print("Username : ");
       switch (WiFi_netw_nr) {
         case 0:  break;
-        case 1: Serial.println(WIFI_Network1); break;
-        case 2: Serial.println(WIFI_Network2); break;
-        case 3: Serial.println(WIFI_Network3); break;
-        case 4: Serial.println(WIFI_Network4); break;
-        case 5: Serial.println(WIFI_Network5); break;
-        case 6: Serial.println(WIFI_Network6); break;
-        case 7: Serial.println(WIFI_Network7); break;
+      case 1: Serial.print(" WIFI_Network1  : "); Serial.println(WIFI_Network1); Serial.print(" WIFI_Password1 : "); Serial.println(WIFI_Password1); break;
+      case 2: Serial.print(" WIFI_Network2  : "); Serial.println(WIFI_Network2); Serial.print(" WIFI_Password2 : "); Serial.println(WIFI_Password2); break;
+      case 3: Serial.print(" WIFI_Network3  : "); Serial.println(WIFI_Network3); Serial.print(" WIFI_Password3 : "); Serial.println(WIFI_Password3); break;
+      case 4: Serial.print(" WIFI_Network4  : "); Serial.println(WIFI_Network4); Serial.print(" WIFI_Password4 : "); Serial.println(WIFI_Password4); break;
+      case 5: Serial.print(" WIFI_Network5  : "); Serial.println(WIFI_Network5); Serial.print(" WIFI_Password5 : "); Serial.println(WIFI_Password5); break;
+      case 6: Serial.print(" WIFI_Network6  : "); Serial.println(WIFI_Network6); Serial.print(" WIFI_Password6 : "); Serial.println(WIFI_Password6); break;
+      case 7: Serial.print(" WIFI_Network7  : "); Serial.println(WIFI_Network7); Serial.print(" WIFI_Password7 : "); Serial.println(WIFI_Password7); break;
       }
       Serial.print("IP address: ");
       IPAddress myIP = WiFi.localIP();
