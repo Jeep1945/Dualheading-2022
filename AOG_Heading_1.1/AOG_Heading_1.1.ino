@@ -133,6 +133,7 @@ String Conn = " all right";
 
 // Ntrip WiFi
 byte WiFi_netw_nr = 0;
+byte WiFi_netw[8] = {0,0,0,0,0,0,0,0};
 String RTCM_Packet;
 unsigned long startSend_back_Time = millis();
 unsigned long ntriptime_from_AgopenGPS = millis();

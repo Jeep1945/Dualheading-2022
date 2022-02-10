@@ -23,49 +23,53 @@ void scan_WiFi_connections()
     }
     delay(2000);
     Serial.println("");
+    WiFi_netw_nr = 1;
     for (int i = 0; i < net_found; ++i) {
       if (WiFi.SSID(i) == WIFI_Network1) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 7;
+        WiFi_netw[1] = 1;
       }
       if (WiFi.SSID(i) == WIFI_Network2) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 2;
+        WiFi_netw[2] = 1;
       }
       if (WiFi.SSID(i) == WIFI_Network3) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 3;
+        WiFi_netw[3] = 1;
       }
       if (WiFi.SSID(i) == WIFI_Network4) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 4;
+        WiFi_netw[4] = 1;
       }
       if (WiFi.SSID(i) == WIFI_Network5) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 5;
+        WiFi_netw[5] = 1;
       }
       if (WiFi.SSID(i) == WIFI_Network6) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 6;
+        WiFi_netw[6] = 1;
       }
       if (WiFi.SSID(i) == WIFI_Network7) {
         Serial.println("possible to connect with : " + WiFi.SSID(i));
         network_found = true;  // network found in list
-        WiFi_netw_nr = 1;
+        WiFi_netw[7] = 1;
       }
     }
+  }
+  for (int i = 0; i < 8; ++i) {
+    if (WiFi_netw[i] == 1) WiFi_netw_nr = i;
   }
   if (WiFi_scan_Attempt > 4) {
     ESP.restart();
   }
   else delay(10000);
-  if (WiFi_netw_nr > 0) WiFi_scan_Attempt = 1;
+  if (network_found) WiFi_scan_Attempt = 1;
   else WiFi_scan_Attempt++;
 
 }  //end scan_WiFi_connections()
@@ -79,6 +83,7 @@ void connectToWiFi() {
   }
   else {
     WiFi.mode(WIFI_STA);
+    //      Serial.println(WiFi_netw_nr);
     switch (WiFi_netw_nr) {
       case 0:  break;
       case 1: WiFi.begin(WIFI_Network1, WIFI_Password1); break;
@@ -89,7 +94,6 @@ void connectToWiFi() {
       case 6: WiFi.begin(WIFI_Network6, WIFI_Password6); break;
       case 7: WiFi.begin(WIFI_Network7, WIFI_Password7); break;
     }
-    //    }
 
     //    Serial.print("try to connect to WiFi: ");
 
@@ -111,13 +115,13 @@ void connectToWiFi() {
       // Serial.print("Username : ");
       switch (WiFi_netw_nr) {
         case 0:  break;
-      case 1: Serial.print(" WIFI_Network1  : "); Serial.println(WIFI_Network1); Serial.print(" WIFI_Password1 : "); Serial.println(WIFI_Password1); break;
-      case 2: Serial.print(" WIFI_Network2  : "); Serial.println(WIFI_Network2); Serial.print(" WIFI_Password2 : "); Serial.println(WIFI_Password2); break;
-      case 3: Serial.print(" WIFI_Network3  : "); Serial.println(WIFI_Network3); Serial.print(" WIFI_Password3 : "); Serial.println(WIFI_Password3); break;
-      case 4: Serial.print(" WIFI_Network4  : "); Serial.println(WIFI_Network4); Serial.print(" WIFI_Password4 : "); Serial.println(WIFI_Password4); break;
-      case 5: Serial.print(" WIFI_Network5  : "); Serial.println(WIFI_Network5); Serial.print(" WIFI_Password5 : "); Serial.println(WIFI_Password5); break;
-      case 6: Serial.print(" WIFI_Network6  : "); Serial.println(WIFI_Network6); Serial.print(" WIFI_Password6 : "); Serial.println(WIFI_Password6); break;
-      case 7: Serial.print(" WIFI_Network7  : "); Serial.println(WIFI_Network7); Serial.print(" WIFI_Password7 : "); Serial.println(WIFI_Password7); break;
+        case 1: Serial.print(" WIFI_Network1  : "); Serial.println(WIFI_Network1); Serial.print(" WIFI_Password1 : "); Serial.println(WIFI_Password1); break;
+        case 2: Serial.print(" WIFI_Network2  : "); Serial.println(WIFI_Network2); Serial.print(" WIFI_Password2 : "); Serial.println(WIFI_Password2); break;
+        case 3: Serial.print(" WIFI_Network3  : "); Serial.println(WIFI_Network3); Serial.print(" WIFI_Password3 : "); Serial.println(WIFI_Password3); break;
+        case 4: Serial.print(" WIFI_Network4  : "); Serial.println(WIFI_Network4); Serial.print(" WIFI_Password4 : "); Serial.println(WIFI_Password4); break;
+        case 5: Serial.print(" WIFI_Network5  : "); Serial.println(WIFI_Network5); Serial.print(" WIFI_Password5 : "); Serial.println(WIFI_Password5); break;
+        case 6: Serial.print(" WIFI_Network6  : "); Serial.println(WIFI_Network6); Serial.print(" WIFI_Password6 : "); Serial.println(WIFI_Password6); break;
+        case 7: Serial.print(" WIFI_Network7  : "); Serial.println(WIFI_Network7); Serial.print(" WIFI_Password7 : "); Serial.println(WIFI_Password7); break;
       }
       Serial.print("IP address: ");
       IPAddress myIP = WiFi.localIP();
@@ -127,6 +131,9 @@ void connectToWiFi() {
       Serial.print("changing IP to: ");
       Serial.println(myIP);
       IPAddress gwIP = WiFi.gatewayIP();
+      if (!WiFi.config(myIP, gwIP, mask, gwIP)) {
+        Serial.println("Network failed to configure");
+      }
       delay(200);
       Serial.print("Connected IP - Address : ");
       myIP = WiFi.localIP();
@@ -162,6 +169,7 @@ void connectToWiFi() {
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
       Serial.println("Connection Failed! Rebooting...");
       delay(5000);
+      Ntriphotspot = 0;
       //    ESP.restart();
     }
   }
