@@ -60,7 +60,7 @@ Applications:
 
 ### Ardusimple simpleRTK2B
 
-Upload the "POSITION" and "HEADING" configurations to the "right" (PVT) and "left" (relative position) GNSS receivers by means of the [u-center](https://www.u-blox.com/en/product/u-center) software. Please note that these settings require firmware v1.13.
+Upload the "AMA_PVT" and "HEADING" configurations to the "right" (PVT) and "left" (relative position) GNSS receivers by means of the [u-center](https://www.u-blox.com/en/product/u-center) software. Please note that these settings require firmware v1.13.
 
 If you use Benjamin's PCB with the 2nd ESP32, then upload the "AMA" configuration to the PVT receiver instead of "POSITION".
 
@@ -123,7 +123,7 @@ Anwendungen:
 
 ### Ardusimple simpleRTK2B
 
-Mittels der [u-center](https://www.u-blox.com/en/product/u-center) Software die "POSITION" und "HEADING" Konfigurationen auf dem "rechten" (PVT) und dem "linken" (relative Position) GNSS Empfänger aufspielen. Diese Einstellungen erfordern Firmware v1.13.
+Mittels der [u-center](https://www.u-blox.com/en/product/u-center) Software die "AMA_PVT" und "HEADING" Konfigurationen auf dem "rechten" (PVT) und dem "linken" (relative Position) GNSS Empfänger aufspielen. Diese Einstellungen erfordern Firmware v1.13.
 
 Bei Verwendung von Benjamins Platine mit einem zweiten ESP32 die "AMA" Konfiguration auf dem PVT Empfänger aufspielen (anstatt "POSITION").
 
