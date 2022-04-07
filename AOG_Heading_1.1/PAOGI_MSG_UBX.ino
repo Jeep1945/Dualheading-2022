@@ -75,6 +75,9 @@ void PAOGI1_builder() {
   checksum.toUpperCase();
   RollHeadingrest.concat(checksum);
 
+  if (RollHeadingrest.substring(46, 47) == "E" || RollHeadingrest.substring(46, 47) == "W") Paogi_Shit1 = 0;                 // Paogichek Meyer
+  else Paogi_true_UBX = false; 
+
   //  Serial.println(RollHeadingrest);
   //  Serial.println(GGASatz);
 

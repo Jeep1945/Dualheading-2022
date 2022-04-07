@@ -214,7 +214,8 @@ void NMEA_read() {
 void sendAMATRON() {
   if (Amatron_begin_Time < millis() - 60000)
   {
-    Serial2.println(GGASatz_Korr);
+    if (GGASatz_Korr.substring(46, 47) == "E" || GGASatz_Korr.substring(46, 47) == "W")                 //GGA-Satz-Prüfung Meyer
+      Serial2.println(GGASatz_Korr);
     Serial2.println(VTGSatz_Korr);
     Serial2.println(ZDASatz);
 
