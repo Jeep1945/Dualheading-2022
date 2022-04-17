@@ -2,8 +2,8 @@
 Heading for autonomous driving, specially for AGopenGPS. 
 With an ESP32 and 2 Ardusimple F9P, heading and Roll (possible) for a vehicle is calculated. 
 A little instruction is at the begin of every sketch. 
-In Version you connect by USB, WiF or Ethernet and you can use Ntrip directly with a handy hotspot or router or by AGopenGPS over USB, wifi or Ethernet.
-This version is also for BENJAMINS PCB with two esp32 for AMATRON. 
+In Version you connect by USB, WiF or Ethernet and you can use 2 Ntrip directly with a handy hotspot or router or by AGopenGPS over USB, wifi or Ethernet.
+This version is also for BENJAMINS  and my PCB with two esp32 for AMATRON. 
 For the 2.ESP32 use the Program  2._ESP_Baudwandler.
 You can input 7 Networks, for example, 7 different User with different handy hotspots.
 The program scans WiFi and connect with the first found, if it fails, it tries again.
@@ -39,6 +39,7 @@ Applications:
 * Optional roll calculation
 * Optional data forwarding to another ESP32
 * Over-the-air (OTA) re-programming 
+* two ntrip, when you loose one, change automaticly to the second one.
 
 ## What do I need?
 
@@ -61,8 +62,6 @@ Applications:
 ### Ardusimple simpleRTK2B
 
 Upload the "AMA_PVT" and "HEADING" configurations to the "right" (PVT) and "left" (relative position) GNSS receivers by means of the [u-center](https://www.u-blox.com/en/product/u-center) software. Please note that these settings require firmware v1.13.
-
-If you use Benjamin's PCB with the 2nd ESP32, then upload the "AMA" configuration to the PVT receiver instead of "POSITION".
 
 ### ESP32
 
@@ -102,6 +101,7 @@ Anwendungen:
 * Optionale Rollwinkelberechnung
 * Optionale Datenweiterleitung an einen weiteren ESP32
 * Over-the-air (OTA) Reprogrammierung
+* 2 Ntrips, wenn einer ausfällt, wird zum 2. verbunden
 
 ## Was benötige ich?
 
@@ -124,8 +124,6 @@ Anwendungen:
 ### Ardusimple simpleRTK2B
 
 Mittels der [u-center](https://www.u-blox.com/en/product/u-center) Software die "AMA_PVT" und "HEADING" Konfigurationen auf dem "rechten" (PVT) und dem "linken" (relative Position) GNSS Empfänger aufspielen. Diese Einstellungen erfordern Firmware v1.13.
-
-Bei Verwendung von Benjamins Platine mit einem zweiten ESP32 die "AMA" Konfiguration auf dem PVT Empfänger aufspielen (anstatt "POSITION").
 
 ### ESP32
 
