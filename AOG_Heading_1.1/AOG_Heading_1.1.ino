@@ -23,7 +23,7 @@ String VERS = "Version AOG_Heading_1.1_10.02.2022";
 // rollaktiv is 0, is done in AOG, so Antenna offset and hight is to do in AOG
 // GGA_Send_Back_Time for SAPOS or Apos set to 10,
 ///by Fix "OGI", Heading GPS "Dual"
-//  IMPORTANT  // serial USB baude changed to 115400
+//  IMPORTANT  // serial USB baude changed to 38400
 //  IMPORTANT  // you have to use the new PVT config
 
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
