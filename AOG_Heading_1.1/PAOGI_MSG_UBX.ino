@@ -9,8 +9,8 @@ void PAOGI1_builder() {
     WEcoordinaten = GGAeast;
   }
 
-  if ((heading > 5) && (heading < 355) && (GPSqualin1 > 3)) {
-    if ((abs(heading - headingzuvor) > 3) && (heading_check1 < 4)) {
+  if ((heading > 15) && (heading < 345) && (GPSqualin1 > 3)) {
+    if ((abs(heading - headingzuvor) > 15) && (heading_check1 < 4)) {
       heading = headingzuvor;
       heading_check1++;
     }

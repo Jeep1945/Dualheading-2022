@@ -8,8 +8,8 @@ void PAOGI1_builder() {
   if (rollnord1 >= 1000)  NScoordinaten = String(rollnord1, 7);
   if (rollnord1 < 1000)  NScoordinaten = ("0" + String(rollnord1, 7));
 
-  if ((heading > 3) && (heading < 357) && (GPSqualin1 > 3)) {
-    if ((abs(heading - headingzuvor) > 3) && (heading_check1 < 4)) {
+  if ((heading > 15) && (heading < 345) && (GPSqualin1 > 3)) {
+    if ((abs(heading - headingzuvor) > 15) && (heading_check1 < 4)) {
       if (speeed > 0.5) {
         heading = headingnord;
       }
