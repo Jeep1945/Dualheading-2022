@@ -36,11 +36,49 @@ void heading_relposnet() {
     Serial.print(" carrSoln : ");
     Serial.print (carrSoln);
   }
-  /*
-    if (carrSoln < 2) {
-      heading = headingnord;
-    }
-  */
+  for (j = 1; j <= 9; j++) {
+    hzuvor[j - 1] = hzuvor[j];
+    if (debugmode2)   Serial.print(" h: " + String(j) + ", " + String(hzuvor[j - 1]));
+  }
+  hzuvor[9] = heading;
+  if  (abs(hzuvor[8] - hzuvor[9]) > 90) {   // d.h. geht nur bei Sprung 360-0
+    if (debugmode2) Serial.print(" h8+9: " + String(hzuvor[8]) + ", " + String(hzuvor[9]));
+    if (hzuvor[8] > hzuvor[9])  hzuvor[9] += 360;
+    else  hzuvor[9] -= 360;
+  }
+  for (i = 0; i < 10; i++) {
+    if (hzuvormin > hzuvor[i]) hzuvormin = hzuvor[i];
+    if (hzuvormax < hzuvor[i]) hzuvormax = hzuvor[i];
+  }
+  GGDs = 0;
+  for (j = 0; j <= 9; j++) {
+    GGDs += hzuvor[j] * (j + 1);
+  }
+  GGDs /= 55.0;
+  if (GGDs < 0) {           // Wenn der GGDs unter 0, dann bei allen 10 headings 360 add
+    for (j = 0; j <= 9; j++) hzuvor[j] += 360;
+  }
+  if (GGDs > 360) {  // Wenn der GGDs unter 0, dann bei allen 10 headings 360 sub
+    for (j = 0; j <= 9; j++) hzuvor[j] -= 360;
+  }
+  if (GGDs > 360)   GGDs -= 360;
+  if (GGDs < 0)   GGDs += 360;
+
+  if ((GGDs - headingUBX) > 90)    GGDs -= 360;
+  if ((GGDs - headingUBX) < -90)   GGDs += 360;
+  heading2 = headingUBX * (1 - Headingfilter / 10) + GGDs * (Headingfilter / 10);
+  if (GGDs > 360)   GGDs -= 360;
+  if (GGDs < 0)   GGDs += 360;
+  if (heading2 > 360)   heading2 -= 360;
+  if (heading2 < 0)   heading2 += 360;
+  heading_source = 0;
+  if (relPosValid == 1) {
+    heading = heading2;
+    heading_source = 2;
+  }
+  hzuvormax = GGDs;
+  hzuvormin = GGDs;
+
 }
 
 

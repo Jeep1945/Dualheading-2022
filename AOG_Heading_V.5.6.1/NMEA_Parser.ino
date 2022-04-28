@@ -149,24 +149,26 @@ void NMEA_read() {
       else {
         VTGSatz = nmea;
       }
-      if ((millis() - Single_begin_Time_VTG) > 100) {
-        Single_begin_Time_VTG = millis();
-        BytelaengeVTG = VTGSatz.length() + 1;
-        if (BytelaengeVTG < 40) {
-          if ((send_Data_Via == 0) && (!Dual_Antenna)) {
-            Serial.println(VTGSatz);
-          }
-          if ((send_Data_Via > 0) && (!Dual_Antenna)) {
-            VTGSatz.getBytes(ReplyBufferVTG, BytelaengeVTG);
-            ReplyBufferVTG[BytelaengeVTG - 1] = 0x0D;
-            ReplyBufferVTG[BytelaengeVTG] = 0x0A;
-            if (send_Data_Via == 1) {
-              Eth_udpPAOGI.beginPacket(Eth_ipDestination, portDestination);
-              Eth_udpPAOGI.write(ReplyBufferVTG, BytelaengeVTG + 1);
-              Eth_udpPAOGI.endPacket();
+      if (!AOG_Version) {
+        if ((millis() - Single_begin_Time_VTG) > 100) {
+          Single_begin_Time_VTG = millis();
+          BytelaengeVTG = VTGSatz.length() + 1;
+          if (BytelaengeVTG < 40) {
+            if ((send_Data_Via == 0) && (!Dual_Antenna)) {
+              Serial.println(VTGSatz);
             }
-            if (send_Data_Via == 2) {
-              udpRoof.writeTo(ReplyBufferVTG, BytelaengeVTG + 1, ipDestination1, portDestination);
+            if ((send_Data_Via > 0) && (!Dual_Antenna)) {
+              VTGSatz.getBytes(ReplyBufferVTG, BytelaengeVTG);
+              ReplyBufferVTG[BytelaengeVTG - 1] = 0x0D;
+              ReplyBufferVTG[BytelaengeVTG] = 0x0A;
+              if (send_Data_Via == 1) {
+                Eth_udpPAOGI.beginPacket(Eth_ipDestination, portDestination);
+                Eth_udpPAOGI.write(ReplyBufferVTG, BytelaengeVTG + 1);
+                Eth_udpPAOGI.endPacket();
+              }
+              if (send_Data_Via == 2) {
+                udpRoof.writeTo(ReplyBufferVTG, BytelaengeVTG + 1, ipDestination1, portDestination);
+              }
             }
           }
         }

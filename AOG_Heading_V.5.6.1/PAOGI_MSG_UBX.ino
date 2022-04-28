@@ -8,20 +8,32 @@ void PAOGI1_builder() {
   if (rollnord1 >= 1000)  NScoordinaten = String(rollnord1, 7);
   if (rollnord1 < 1000)  NScoordinaten = ("0" + String(rollnord1, 7));
 
-  if ((heading > 15) && (heading < 345) && (GPSqualin1 > 3)) {
-    if ((abs(heading - headingzuvor) > 15) && (heading_check1 < 4)) {
-      if (speeed > 0.5) {
-        heading = headingnord;
-      }
-      else   heading = headingzuvor;
-      heading_check1++;
+  //GPSqualin1 = 4;
+  if ((heading_check1 < 4) && (GPSqualin1 > 3)) {
+    if (heading - headingzuvor < -200)  {
+      heading += 360;
     }
-    else {
+    if (heading - headingzuvor > 200)  {
+      headingzuvor += 360;
+    }
+    if (abs(heading - headingzuvor) < 15) {
+      headingzuvor = heading;
       heading_check1 = 0;
     }
+    if (heading > 360)  heading -= 360;
+    if (heading < 0)  heading += 360;
+    if (headingzuvor > 360)  headingzuvor -= 360;
+    if (headingzuvor < 0)  headingzuvor += 360;
   }
+  else {
+    if (heading_check1 > 3)
+      heading = headingzuvor;
+    heading_check1++;
+  }
+  if (heading_check1 > 3)   heading_check1 = 0;
+
   headingzuvor = heading;
-  
+
   if ((GPSqualin1 < 3) && (speeed > 0.3))  heading = headingnord;
 
 
@@ -80,9 +92,9 @@ void PAOGI1_builder() {
   checksum.toUpperCase();
   RollHeadingrest.concat(checksum);
 
-  if (RollHeadingrest.substring(46, 47) == "E" || RollHeadingrest.substring(46, 47) == "W") Paogi_Shit1 = 0;                 // Paogichek Meyer
-  else Paogi_true_UBX = false; 
-
+  if ((RollHeadingrest.substring(46, 47) == "E" || RollHeadingrest.substring(46, 47) == "W") && (RollHeadingrest.substring(57, 58) == ",")) Paogi_Shit1 = 0;                 // Paogichek Meyer
+  else Paogi_true_UBX = false;
+        
   //  Serial.println(RollHeadingrest);
   //  Serial.println(GGASatz);
 

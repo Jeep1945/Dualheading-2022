@@ -17,8 +17,9 @@ byte Eth_CS_PIN = 5;       //CS PIN with SPI Ethernet hardware W 5500  SPI confi
 int OTA_active = 0;     // 0, no OTA possible, 1 OTA for 60 sec after Start
 int rollaktiv = 1;     // 0: roll in AOG  1: roll activated in Dualheading
 int AOG_Version = 1;   // 0: V5.5 or older  1: V5.6
+double Headingfilter = 5;       // 1: no   10: most filter
 //  IMPORTANT  // For serial USB 38400 baude 
-// you have to use the new PVT config
+// you have to use the new AMA-PVT config
 
 
 int send_Data_Via = 1;       // send Data via  0: USB, 1: Ethernet, 2: WiFi with router and Ntrip from AOG 3; WiFi to tablet
@@ -148,16 +149,16 @@ char Ntrip_passwd[40] = "";      //"ntrip caster's client password";
 int Ntrip_httpPort;      //port 2101 is default port of NTRIP caster
 
 //static IP for WiFi to Router
-byte myip[4] = { 192, 168, 5, 79 };     // Roofcontrol module
-byte gwip[4] = { 192, 168, 5, 1 };      // Gateway IP also used if Accesspoint created
+byte myip[4] = { 192, 168, 1, 79 };     // Roofcontrol module
+byte gwip[4] = { 192, 168, 1, 1 };      // Gateway IP also used if Accesspoint created
 byte mask[4] = { 255, 255, 255, 0 };
 byte myDNS[4] = { 8, 8, 8, 8 };         //optional
-byte ipDestination[4] = { 192, 168, 5, 255}; //IP address of router to send UDP data to
+byte ipDestination[4] = { 192, 168, 1, 255}; //IP address of router to send UDP data to
 //byte ipDestination[4] = { 10, 0, 0, 18};       //IP address of router to send UDP data to
 byte myIPEnding = 79;             //ending of IP adress x.x.x.79 of ESP32
 
 // Ethernet
-byte Eth_myip[4] = { 192, 168, 5, 80 };//IP address to send UDP data to
+byte Eth_myip[4] = { 192, 168, 1, 80 };//IP address to send UDP data to
 //byte Eth_myip[4] = { 10, 0, 0, 22 };//IP address to send UDP data via router to tablett
 //byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0xB3, 0x1B}; // original
 byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x00, 0x9A };
@@ -189,13 +190,14 @@ AsyncUDP udpNtrip;
 WiFiServer server(80);
 
 // Heading
-float heading, heading1, headingUBX, headingzuvor = 0, headingzuvorVTG;
+float heading, heading1, heading2, headingUBX, heading_diff, headingzuvor = 0, headingzuvorVTG;
 double headingUBXmin, headingUBXmax, headingVTGmin, headingVTGmax;
 double speeed = 0, headingnord;
+int move_ABline = 0, heading_source = 0;
 
 
 // roll
-float roll, rollCorrectionDistance = 0.00;
+float roll, rollCorrectionDistance = 0.00, GGDs;
 double rollnord = 0.0, rolleast = 0.0;
 double rollnord1 = 0.0, rolleast1 = 0.0;
 double rollnordrel_before = 0.0, rolleastrel_before = 0.0;
@@ -313,17 +315,6 @@ void setup() {
   delay(10);
   Serial.println("");
   Serial.println(VERS);
-  Serial.println("");
-  if (AOG_Version)        // for AOG V5.6 and higher
-    Serial.println("AOG Version 5.6 or higher");
-  else {
-    Serial.println("AOG Version 5.5 or lower ");
-    Eth_myip[2] = 1;//IP address to send UDP data to
-    myip[2] = 1;     // Roofcontrol module
-    gwip[2] = 1;      // Gateway IP also used if Accesspoint created
-    mask[2] = 1;
-    ipDestination[2] = 1; //IP address of router to send UDP data to
-  }
   Serial.println("");
   Serial.println("Start setup");
   Serial1.begin(115200, SERIAL_8N1, RX1, TX1);
