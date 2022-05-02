@@ -158,7 +158,7 @@ byte ipDestination[4] = { 192, 168, 1, 255}; //IP address of router to send UDP 
 byte myIPEnding = 79;             //ending of IP adress x.x.x.79 of ESP32
 
 // Ethernet
-byte Eth_myip[4] = { 192, 168, 1, 80 };//IP address to send UDP data to
+byte Eth_myip[4] = { 192, 168, 1, 124 };//IP address to send UDP data to
 //byte Eth_myip[4] = { 10, 0, 0, 22 };//IP address to send UDP data via router to tablett
 //byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0xB3, 0x1B}; // original
 byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x00, 0x9A };
