@@ -47,14 +47,13 @@ void Eth_Start() {
         Serial.print("Ethernet UDP sending from port: ");
         Serial.println(portMy);
       }
-
       //init UPD Port getting NTRIP from AOG
       if (Eth_udpNtrip.begin(AOGNtripPort)) // AOGNtripPort
       {
         Serial.print("Ethernet NTRIP UDP listening to port: ");
         Serial.println(AOGNtripPort);
       }
-    }
-    //    Serial.println();
+    } 
+//    Serial.println();
   }
 }

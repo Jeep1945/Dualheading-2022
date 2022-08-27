@@ -26,13 +26,22 @@ void NMEA_read() {
         }
       }
       j = 0;
+      NMEA_OK = true;
       GGA_time = (GGASatz.substring(argGGA_Anz[j] + 1, argGGA_Anz[j + 1]));
       j++;   // Nord/Süd Koordinate
       GGAnord = (GGASatz.substring(argGGA_Anz[j] + 1, argGGA_Anz[j + 1]));
+      if ((argGGA_Anz[j] + 1 != 17) && (argGGA_Anz[j + 1] != 29)) NMEA_OK = false;
+      //Serial.print(argGGA_Anz[j] + 1); Serial.print(",");
+      //Serial.print(argGGA_Anz[j + 1]); Serial.print(",");
+
       j++;   // N/S
       GGANordSued = (GGASatz.substring(argGGA_Anz[j] + 1, argGGA_Anz[j + 1]));
       j++;   // Ost/West Koordinate
       GGAeast = (GGASatz.substring(argGGA_Anz[j] + 1, argGGA_Anz[j + 1]));
+      if ((argGGA_Anz[j] + 1 != 32) && (argGGA_Anz[j + 1] != 45)) NMEA_OK = false;
+      //Serial.print(argGGA_Anz[j] + 1); Serial.print(",");
+      //Serial.print(argGGA_Anz[j + 1]); Serial.println(",");
+
       j++;   // O/W
       GGAWestEast = (GGASatz.substring(argGGA_Anz[j] + 1, argGGA_Anz[j + 1]));
       j++;   // GPS Quality
@@ -149,26 +158,24 @@ void NMEA_read() {
       else {
         VTGSatz = nmea;
       }
-      if (!AOG_Version) {
-        if ((millis() - Single_begin_Time_VTG) > 100) {
-          Single_begin_Time_VTG = millis();
-          BytelaengeVTG = VTGSatz.length() + 1;
-          if (BytelaengeVTG < 40) {
-            if ((send_Data_Via == 0) && (!Dual_Antenna)) {
-              Serial.println(VTGSatz);
+      if ((millis() - Single_begin_Time_VTG) > 100) {
+        Single_begin_Time_VTG = millis();
+        BytelaengeVTG = VTGSatz.length() + 1;
+        if (BytelaengeVTG < 40) {
+          if ((send_Data_Via == 0) && (!Dual_Antenna)) {
+            Serial.println(VTGSatz);
+          }
+          if ((send_Data_Via > 0) && (!Dual_Antenna)) {
+            VTGSatz.getBytes(ReplyBufferVTG, BytelaengeVTG);
+            ReplyBufferVTG[BytelaengeVTG - 1] = 0x0D;
+            ReplyBufferVTG[BytelaengeVTG] = 0x0A;
+            if (send_Data_Via == 1) {
+              Eth_udpPAOGI.beginPacket(Eth_ipDestination, portDestination);
+              Eth_udpPAOGI.write(ReplyBufferVTG, BytelaengeVTG + 1);
+              Eth_udpPAOGI.endPacket();
             }
-            if ((send_Data_Via > 0) && (!Dual_Antenna)) {
-              VTGSatz.getBytes(ReplyBufferVTG, BytelaengeVTG);
-              ReplyBufferVTG[BytelaengeVTG - 1] = 0x0D;
-              ReplyBufferVTG[BytelaengeVTG] = 0x0A;
-              if (send_Data_Via == 1) {
-                Eth_udpPAOGI.beginPacket(Eth_ipDestination, portDestination);
-                Eth_udpPAOGI.write(ReplyBufferVTG, BytelaengeVTG + 1);
-                Eth_udpPAOGI.endPacket();
-              }
-              if (send_Data_Via == 2) {
-                udpRoof.writeTo(ReplyBufferVTG, BytelaengeVTG + 1, ipDestination1, portDestination);
-              }
+            if (send_Data_Via == 2) {
+              udpRoof.writeTo(ReplyBufferVTG, BytelaengeVTG + 1, ipDestination1, portDestination);
             }
           }
         }
@@ -216,8 +223,7 @@ void NMEA_read() {
 void sendAMATRON() {
   if (Amatron_begin_Time < millis() - 60000)
   {
-    if (GGASatz_Korr.substring(46, 47) == "E" || GGASatz_Korr.substring(46, 47) == "W")                 //GGA-Satz-Prüfung Meyer
-      Serial2.println(GGASatz_Korr);
+    Serial2.println(GGASatz_Korr);
     Serial2.println(VTGSatz_Korr);
     Serial2.println(ZDASatz);
 

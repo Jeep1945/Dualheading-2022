@@ -1,3 +1,55 @@
+//Coordinaten_check---------------------------------------------------------------------------------------------
+
+void  Coordinaten_check() {
+
+
+  if (GGAnord.substring(4, 5) == ".") {  // Data from GGA
+    if (((abs(nordWinkel - rollnord_before) > 1) || (abs(fixnorddeci - fixnorddeci_before) > 0.05)) && (Coodinate1_check2 < 4)) {  // Data from GGA only degrees
+      Paogi_true_UBX = false;
+      Coodinate1_check2++;
+      //Serial.println("  Hallo1  ");
+    }
+    else {
+      rollnord_before = nordWinkel;
+      fixnorddeci_before = fixnorddeci;
+      Coodinate1_check2 = 0;
+      }
+  }
+  else {
+    Paogi_true_UBX = false;
+    Coodinate1_check2++;
+    //Serial.println("  Hallo2  ");
+  }
+
+  if (GGAeast.substring(5, 6) == ".") {  // Data from GGA
+    if (((abs(eastWinkel - rolleast_before) > 1) || (abs(fixeastdeci - fixeastdeci_before) > 0.05)) && (Coodinate1_check1 < 4)) {
+      Paogi_true_UBX = false;
+      Coodinate1_check1++;
+    }
+    else {
+      rolleast_before = eastWinkel;
+      fixeastdeci_before = fixeastdeci;
+      Coodinate1_check1 = 0;
+    }
+  }
+  else {
+    Paogi_true_UBX = false;
+    Coodinate1_check1++;
+  }
+  if (debugmode) {
+    //Serial.print("  nordWinkel  ");
+    //Serial.print(nordWinkel - rollnord_before);
+    Serial.print("  fixnorddeci_before  ");
+    Serial.print(fixnorddeci_before);
+    Serial.print("  fixnorddeci  ");
+    Serial.print(fixnorddeci - fixnorddeci_before, 7);
+    Serial.print("  fixeastdeci : ");
+    Serial.print(fixeastdeci - fixeastdeci_before, 7);
+    Serial.print("  Coodinate1_check2 : ");
+    Serial.println(Coodinate1_check2);
+  }
+}  // end void
+
 // *********************************************************************************
 
 void heading_relposnet() {
@@ -17,7 +69,7 @@ void heading_relposnet() {
     headingUBX -= 360;
   }
   heading = headingUBX;
-
+  if (debugProtokoll)    Serial.println(" UBX : " + String(headingUBX));
   uint32_t flags = ubxmessage.rawBuffer[60 + 6];
 
   //  Serial.println(flags, BIN);

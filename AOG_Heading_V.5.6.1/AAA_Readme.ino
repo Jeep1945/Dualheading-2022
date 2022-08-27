@@ -21,7 +21,13 @@
 // rollaktiv is 0, is done in AOG, so Antenna offset and hight is to do in AOG
 // GGA_Send_Back_Time for SAPOS or Apos set to 10,
 // by Fix "OGI", Heading GPS "Dual"
-//  IMPORTANT  // serial USB baude changed to 38400
+//  IMPORTANT  // serial USB baude to 38400
 //  IMPORTANT  // you have to use the new AMA PVT config
 // you get install 2 Ntrips and if you loose first, it changes automaticly to the second
 // open serial Monitor, reset ESP32 and you get a protokoll, what´s going on
+
+//#define Button_left   12
+//#define Button_middle 14
+//#define Button_right  26
+
+// You can install Buttons to move line 2 cm left an right at ESP pinout

@@ -1,14 +1,25 @@
 void PAOGI1_builder() {
 
-  if ((rolleast1 < 1000) && (rolleast1 > 0)) WEcoordinaten = ("00" + String(rolleast1, 7));
-  if ((rolleast1 >= 1000) && (rolleast1 < 10000)) WEcoordinaten = ("0" + String(rolleast1, 7));
-  if (rolleast1 >= 10000) WEcoordinaten = String(rolleast1, 7);
+  if ((rollaktiv == 0) && (Paogi_true_UBX)) {   // calculate roll        ########################################################
+    NScoordinaten = GGAnord;
+    WEcoordinaten = GGAeast;
+  }
+  //  Serial.println(" 2  " + String(rolleast1));
+  if ((rollaktiv == 1) && (Paogi_true_UBX)) {   // calculate roll        ########################################################
+    if ((rolleast1 < 1000) && (rolleast1 > 0)) WEcoordinaten = ("00" + String(rolleast1, 7));
+    if ((rolleast1 >= 1000) && (rolleast1 < 10000)) WEcoordinaten = ("0" + String(rolleast1, 7));
+    if (rolleast1 >= 10000) WEcoordinaten = String(rolleast1, 7);
 
-  rollnord1 = abs(rollnord1);
-  if (rollnord1 >= 1000)  NScoordinaten = String(rollnord1, 7);
-  if (rollnord1 < 1000)  NScoordinaten = ("0" + String(rollnord1, 7));
-
-  //GPSqualin1 = 4;
+    if (debugmode) {
+      Serial.print("      rollnord  "  + String(rollnord));
+      Serial.print("    rolleast  "  + String(rolleast));
+      Serial.println(" 1  " + String(rolleast1));
+    }
+    rollnord1 = abs(rollnord1);
+    if (rollnord1 >= 1000)  NScoordinaten = String(rollnord1, 7);
+    if (rollnord1 < 1000)  NScoordinaten = ("0" + String(rollnord1, 7));
+  }
+  //check if headingdirection is possible
   if ((heading_check1 < 4) && (GPSqualin1 > 3)) {
     if (heading - headingzuvor < -200)  {
       heading += 360;
@@ -26,8 +37,7 @@ void PAOGI1_builder() {
     if (headingzuvor < 0)  headingzuvor += 360;
   }
   else {
-    if (heading_check1 > 3)
-      heading = headingzuvor;
+    heading = headingzuvor;
     heading_check1++;
   }
   if (heading_check1 > 3)   heading_check1 = 0;
@@ -66,16 +76,19 @@ void PAOGI1_builder() {
   (RollHeadingrest.concat(BS));
   (RollHeadingrest.concat(BS));
   (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(ntrip_from_AgopenGPS));
+  (RollHeadingrest.concat(GGAnord));
   (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(Ntriphotspot_an));
-  (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(carrSoln));
-  (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(send_Data_Via));
-  (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(Ntriphotspot));
-  (RollHeadingrest.concat(BS));
+  (RollHeadingrest.concat(GGAeast));
+  /*  (RollHeadingrest.concat(ntrip_from_AgopenGPS));
+    (RollHeadingrest.concat(BS));
+    (RollHeadingrest.concat(Ntriphotspot_an));
+    (RollHeadingrest.concat(BS));
+    (RollHeadingrest.concat(carrSoln));
+    (RollHeadingrest.concat(BS));
+    (RollHeadingrest.concat(send_Data_Via));
+    (RollHeadingrest.concat(BS));
+    (RollHeadingrest.concat(Ntriphotspot));
+  */  (RollHeadingrest.concat(BS));
 
   //(RollHeadingrest.concat(String(Paogi_Shit1)));
   //(RollHeadingrest.concat(BS));
@@ -92,9 +105,17 @@ void PAOGI1_builder() {
   checksum.toUpperCase();
   RollHeadingrest.concat(checksum);
 
-  if ((RollHeadingrest.substring(46, 47) == "E" || RollHeadingrest.substring(46, 47) == "W") && (RollHeadingrest.substring(57, 58) == ",")) Paogi_Shit1 = 0;                 // Paogichek Meyer
+  if (((RollHeadingrest.substring(30, 31) == "N" || RollHeadingrest.substring(30, 31) == "S")) && (RollHeadingrest.substring(21, 22) == ".")) Paogi_Shit = 0;                 // Paogichek Meyer
   else Paogi_true_UBX = false;
-        
+  if (((RollHeadingrest.substring(46, 47) == "E" || RollHeadingrest.substring(46, 47) == "W")) && (RollHeadingrest.substring(37, 38) == ".")) Paogi_Shit = 0;                 // Paogichek Meyer
+  else Paogi_true_UBX = false;
+  if (RollHeadingrest.substring(57, 58) == ",") Paogi_Shit = 0;                 // Paogichek Meyer
+  else Paogi_true_UBX = false;
+
+  if (!NMEA_OK) {
+    Paogi_true_UBX = false;
+    //Serial.println("  Hallo NMEA  ");
+  }
   //  Serial.println(RollHeadingrest);
   //  Serial.println(GGASatz);
 
@@ -119,7 +140,7 @@ void PAOGI1_builder() {
       Eth_udpPAOGI.beginPacket(Eth_ipDestination, portDestination);
       Eth_udpPAOGI.write(ReplyBufferPAOGI, Bytelaenge + 1);
       Eth_udpPAOGI.endPacket();
-      if ((millis() - lastTime) > 10000) { //10000
+      if ((millis() - lastTime) > 10000) {
         //        Serial.println(" I´m still running " + String(millis() / 1000) + "0 Sekunden");
         Serial.println(RollHeadingrest);
         lastTime = millis();
@@ -131,7 +152,7 @@ void PAOGI1_builder() {
       ReplyBufferPAOGI[Bytelaenge - 1] = 0x0D;
       ReplyBufferPAOGI[Bytelaenge] = 0x0A;
       udpRoof.writeTo(ReplyBufferPAOGI, Bytelaenge + 1, ipDestination1, portDestination);
-      if ((millis() - lastTime) > 10000) { //10000
+      if ((millis() - lastTime) > 10000) {
         //        Serial.println(" I´m still running " + String(millis() / 1000) + "0 Sekunden");
         Serial.println(RollHeadingrest);
         lastTime = millis();
@@ -139,7 +160,10 @@ void PAOGI1_builder() {
     }
   }
   else  {
-    //    Paogi_Shit1++;
+    //delay(1);
+    Paogi_Shit1++;
+    Serial.println(Paogi_Shit1);
+    if (Paogi_Shit1 > 10000) Paogi_Shit1 = 0;
     Paogi_true_UBX = true;
     /*    Serial.println(" ");
         Serial.println(" ");

@@ -38,7 +38,7 @@ void  Check_connections() {
       }
       break;
     default: break;
-    
+
   }
 } // end Check_connection
 
@@ -47,12 +47,13 @@ void  Check_connections() {
 void  Start_connections() {
 
   if ((!client_Eth.connected()) && (Ethernet_need_AOG)) {   //  start Ethernetconnection
+    delay(5000);
     Serial.println("Start Ethernet");
     Eth_Start();
     //    if (!client_Eth.connected())  send_Data_Via = 0;         //  if no Ethernetconnection found, send data via USB
   }
-  delay(2000);
   if (Ntrip_Eth_router) {   //  start Ethernetconnection send data and Ntrip from Router
+    delay(5000);
     Serial.println("");
     Serial.println("Start Ntrip with Ethernet on Router");
     Ntrip_choice();

@@ -1,8 +1,8 @@
 
-String VERS = "Version AOG_Heading_V5.6.1_16.04.2022";
+String VERS = "Version AOG_Heading_V.5.6 vom 25.08.2022";
 
 // AAA_Readme for instructions
-
+// 
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  +++++++++++++++++++++++++++++++  BEGIN Setup +++++++++++++++++++++++++++++++++++++++
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -17,8 +17,9 @@ byte Eth_CS_PIN = 5;       //CS PIN with SPI Ethernet hardware W 5500  SPI confi
 int OTA_active = 0;     // 0, no OTA possible, 1 OTA for 60 sec after Start
 int rollaktiv = 1;     // 0: roll in AOG  1: roll activated in Dualheading
 int AOG_Version = 1;   // 0: V5.5 or older  1: V5.6
-double Headingfilter = 5;       // 1: no   10: most filter
-//  IMPORTANT  // For serial USB 38400 baude 
+int move_line_buttons = 0;       // 0: no   1: buttons to move AB line
+double Headingfilter = 1;       // 1: no   10: most filter  Test by your self was is best
+//  IMPORTANT  // For serial USB 38400 baude
 // you have to use the new AMA-PVT config
 
 
@@ -28,7 +29,7 @@ int Ntriphotspot = 0;  // 0: Ntrip from AOG(USB or by Ethernet)   1: Ntrip by Et
 //                        2: Ntrip by WiFi via Hotspot or Router  3: Ntrip by WiFi via Router or direct from AOG
 
 //  if router exists, use 1. Network for him
-//  1 - 7 Networks and Passwords for Hotspots
+//  2 - 7 Networks and Passwords for Hotspots
 char WIFI_Network1[24] = "";           // WiFi network for router
 char WIFI_Password1[24] = "";         // WiFi password for router
 char WIFI_Network2[24] = "";            // WiFi network Client name
@@ -105,6 +106,11 @@ int timeoutRouter = 600;                 //time (s) to hold AP for OTA
 #define TX2   17 // simpleRTK RX1 2. Antenna; free
 
 
+#define Button_left   12
+#define Button_middle 14
+#define Button_right  26
+
+
 //loop time variables in microseconds
 long lastTime = 0;
 byte XOR;
@@ -148,6 +154,7 @@ char Ntrip_user[40] = "";       //"ntrip caster's client user";
 char Ntrip_passwd[40] = "";      //"ntrip caster's client password";
 int Ntrip_httpPort;      //port 2101 is default port of NTRIP caster
 
+
 //static IP for WiFi to Router
 byte myip[4] = { 192, 168, 1, 79 };     // Roofcontrol module
 byte gwip[4] = { 192, 168, 1, 1 };      // Gateway IP also used if Accesspoint created
@@ -159,11 +166,10 @@ byte myIPEnding = 79;             //ending of IP adress x.x.x.79 of ESP32
 
 // Ethernet
 byte Eth_myip[4] = { 192, 168, 1, 124 };//IP address to send UDP data to
-//byte Eth_myip[4] = { 10, 0, 0, 22 };//IP address to send UDP data via router to tablett
 //byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0xB3, 0x1B}; // original
 byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x00, 0x9A };
 byte Eth_ipDest_ending = 100; //ending of IP address to send UDP data to router
-unsigned int portMy = 5544;             //this is port of this module: Autosteer = 5577 IMU = 5566 GPS =
+unsigned int portMy = 5124;             //this is port of this module: Autosteer = 5577 IMU = 5566 GPS =
 unsigned int AOGNtripPort = 2233;       //port NTRIP data from AOG comes in
 unsigned int portDestination = 9999;    //Port of AOG that listens
 unsigned int localPort = 8888;       // local port to listen for UDP packets
@@ -171,7 +177,6 @@ bool Ethernet_running = false;
 char Eth_NTRIP_packetBuffer[512];// buffer for receiving and sending data
 byte ReplyBufferPAOGI[120] = "";        // a string to send back
 int m;
-
 
 IPAddress Eth_ipDestination;
 IPAddress ipDestination1;
@@ -193,14 +198,13 @@ WiFiServer server(80);
 float heading, heading1, heading2, headingUBX, heading_diff, headingzuvor = 0, headingzuvorVTG;
 double headingUBXmin, headingUBXmax, headingVTGmin, headingVTGmax;
 double speeed = 0, headingnord;
-int move_ABline = 0, heading_source = 0;
 
 
 // roll
 float roll, rollCorrectionDistance = 0.00, GGDs;
 double rollnord = 0.0, rolleast = 0.0;
 double rollnord1 = 0.0, rolleast1 = 0.0;
-double rollnordrel_before = 0.0, rolleastrel_before = 0.0;
+double rollnord_before = 0.0, rolleast_before = 0.0;
 double relPosD, relPosDH;
 double rollzuvor = 0;
 double PI180 = 57.295791;
@@ -215,11 +219,13 @@ byte CK_A = 0, CK_B = 0;
 byte incoming_char;
 
 // NMEA erstellen
-int argGGA_Anz[17], argGGA_Anz_ende, arg_MPU_buttons[7];
+bool NMEA_OK = true;
+int argGGA_Anz[17], argGGA_Anz_ende;
 int inByte;
 String argGGA9, GGA_Sealevel, GGA_Age;
 String argGGA10;
 String argGGA11, GGA_time;
+String Button_left_S, Button_middle_S, Button_right_S;
 int start = 0, GGASats;
 String nmea = "", GGAdaten = "", GGAdaten1 = "", VTGdaten = "", VTGspeed = "", VTGheadingnord = "";
 String VTGSatz = "", GGASatz_old = "", GGAnord = "", GGAeast = "", GGAZeit = "", GGAWestEast = "", GGANordSued = "";
@@ -232,26 +238,39 @@ String GGA_hDops, ZDASatz = "", GGA_hDop, GGA_seahigh;
 int  i = 0, ij = 0;
 double GGAZeitNummerbevor, GGAZeitNummer;
 double GGAage, GGA_seahighs;
+double nordWinkel, eastWinkel;
+double fixnorddeci_before = 0.0000, fixeastdeci_before = 0.0000;
 
 // PAOGI erstellen
 bool Paogi_true_UBX = true, Paogi_true = true;
 String RollHeadingrest = "", RollHeadingshit = "", RollHeadingrest_befor = "", BS = ",";
 int Paogi_Long, Coodinate_check1, Coodinate_check2, heading_check1 = 0;
 int Paogi_Long1, Coodinate1_check1, Coodinate1_check2, heading1_check1 = 0;
-int Paogi_Shit1 = 0;
+int Paogi_Shit = 0, Paogi_Shit1 = 0;
 
 byte UDPPAOGIMsg[100], UDPVTGMsg[40], UDPGGAMsg[90];
 unsigned int Bytelaenge, BytelaengeVTG, BytelaengeGGA;
 byte  ReplyBufferVTG[40] = "", ReplyBufferGGA[90] = "";       // a string to send back
 
 //UBX
-double speedUBXint;
-String GGA_Sats;
+double speedUBXint, UBX_lon, UBX_lat;
+int UBX_lon_int, UBX_lat_int;
+double UBX_lon_double, UBX_lat_double;
+int UBX_fixtypei, UBX_Sealeveli;
+String speedUBXstr, GGA_Sats;
+double UBX_Sats, UBX_Sealeveld, UBX_DOP, UBX_fixtype, UBX_Sealevel;
+
 
 // Chechsum controll
 String checksum = "", checksum_GGA = "", checksum_GGA_send = "", checksum_VTG = "", checksum_VTG_send = "";
 String check_headingroll = "";
 int j_checksum_GGA = 0, j_checksum_VTG = 0;
+
+
+// for line movment
+int move_ABline = 0, heading_source = 0;
+int ABline_Direction[3] = {0, 0, 0};  // {heading, cm of movement, same direction as AB line}
+
 
 union UBXMessage {
   struct {
@@ -317,7 +336,9 @@ void setup() {
   Serial.println(VERS);
   Serial.println("");
   Serial.println("Start setup");
+  //  Serial1.begin(38400, SERIAL_8N1, RX1, TX1);
   Serial1.begin(115200, SERIAL_8N1, RX1, TX1);
+  Serial1.setRxBufferSize(1024); // increasing buffer size ?
   delay(10);
   if ((Dual_Antenna == 1) || (send_amatron_nmea = 1)) {
     Serial2.begin(115200, SERIAL_8N1, RX2, TX2);
@@ -325,6 +346,9 @@ void setup() {
   pinMode(Button_ReScan, INPUT_PULLUP);
   pinMode(LED_ntrip_ON, OUTPUT);
   digitalWrite(LED_ntrip_ON, HIGH);
+  pinMode(Button_left, INPUT_PULLUP);
+  pinMode(Button_middle, INPUT_PULLUP);
+  pinMode(Button_right, INPUT_PULLUP);
 
   startSend_back_Time = millis() - (GGA_Send_Back_Time * 1000);
   ntriptime_from_AgopenGPS = millis();
@@ -364,13 +388,16 @@ void setup() {
 
 void loop() {
 
+  // read Date from MPU6050, and/or from 3 buttons to move the line
+  if (move_line_buttons == 1) button_linemove();
+
   // if ntrip lost, try do connect with second Caster
   if (((Ntriphotspot == 1) || (Ntriphotspot == 2)) && (Ntriphotspot_an == 0) && ((WiFi.status() == WL_CONNECTED) || (Ethernet_running))) {   //  if Ntrip should work
     Ntrip_choice();
   }
 
   //  End Accesspoint
-  if ((my_WiFi_Mode == 2) && (millis() - OTA_begin_Time > timeoutRouter * 1000) && (OTA_active) && (send_Data_Via != 3)) {
+  if ((my_WiFi_Mode == 2) && (millis() - OTA_begin_Time > timeoutRouter * 1000)) {
     WiFi.mode(WIFI_OFF);
     Serial.println("End Accesspoint");
     (my_WiFi_Mode = 0);
@@ -382,12 +409,13 @@ void loop() {
     WiFi.mode(WIFI_OFF);
     digitalWrite(LED_ntrip_ON, LOW);
     Network_built_up();
-    if (((my_WiFi_Mode == 0) || (my_WiFi_Mode == 2)) && (OTA_active))  WiFi_Start_AP();
+    if ((my_WiFi_Mode == 0) && (OTA_active))  WiFi_Start_AP();
     OTA_begin_Time = millis();
     if (OTA_active) OTA_update_ESP32();
   }
 
   //  Start up WiFi connection if lost
+
   if ((Ntrip_WiFi) && (WiFi.status() != WL_CONNECTED)) {
     Network_built_up();
   }
@@ -441,11 +469,6 @@ void loop() {
     }
   }
 
-  //  receive RTCM3 data by WiFi from Tablet    ############################################
-  if ((send_Data_Via == 3) && (Ntriphotspot == 3) && (my_WiFi_Mode == 2)) { //  Ntrip_begin_Time
-    doUDPNtrip ();  // If RTCM3 comes in received by WiFi
-  }
-
   //  receive RTCM3 data by WiFi from Router(AOG)   ########################################
   if ((send_Data_Via == 2) && (Ntriphotspot == 3)) {
     doUDPNtrip ();  // If RTCM3 comes in received by WiFi
@@ -464,8 +487,10 @@ void loop() {
   //  read UBX msg from F9P (heading)    ######################################################################
   if (Dual_Antenna == 1) {
     if (Serial2.available()) {         // If anything comes in Serial2
+      //Serial.println("Hallo1");
       incoming_char = Serial2.read();  // ESP32 read RELPOSNED from F9P
       if (i < 4 && incoming_char == ubxmessage.rawBuffer[i]) {
+        //Serial.println("Hallo2");
         i++;
       }
       else if (i > 3) {
