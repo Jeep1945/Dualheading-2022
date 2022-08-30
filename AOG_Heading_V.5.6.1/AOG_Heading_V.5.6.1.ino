@@ -468,6 +468,11 @@ void loop() {
     }
   }
 
+ //  receive RTCM3 data by WiFi from Tablet    ############################################
+  if ((send_Data_Via == 3) && (Ntriphotspot == 3) && (my_WiFi_Mode == 2)) { //  Ntrip_begin_Time
+    doUDPNtrip ();  // If RTCM3 comes in received by WiFi
+  }
+
   //  receive RTCM3 data by WiFi from Router(AOG)   ########################################
   if ((send_Data_Via == 2) && (Ntriphotspot == 3)) {
     doUDPNtrip ();  // If RTCM3 comes in received by WiFi

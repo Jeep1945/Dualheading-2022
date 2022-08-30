@@ -37,7 +37,8 @@ void PAOGI1_builder() {
     if (headingzuvor < 0)  headingzuvor += 360;
   }
   else {
-    heading = headingzuvor;
+    if (heading_check1 > 3)
+      heading = headingzuvor;
     heading_check1++;
   }
   if (heading_check1 > 3)   heading_check1 = 0;
@@ -75,19 +76,19 @@ void PAOGI1_builder() {
   (RollHeadingrest.concat(roll));
   (RollHeadingrest.concat(BS));
   (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(GGAnord));
-  (RollHeadingrest.concat(BS));
-  (RollHeadingrest.concat(GGAeast));
-  /*  (RollHeadingrest.concat(ntrip_from_AgopenGPS));
+  /*  (RollHeadingrest.concat(BS));
+    (RollHeadingrest.concat(GGAnord));
     (RollHeadingrest.concat(BS));
-    (RollHeadingrest.concat(Ntriphotspot_an));
-    (RollHeadingrest.concat(BS));
-    (RollHeadingrest.concat(carrSoln));
-    (RollHeadingrest.concat(BS));
-    (RollHeadingrest.concat(send_Data_Via));
-    (RollHeadingrest.concat(BS));
-    (RollHeadingrest.concat(Ntriphotspot));
+    (RollHeadingrest.concat(GGAeast));
+      (RollHeadingrest.concat(ntrip_from_AgopenGPS));
+      (RollHeadingrest.concat(BS));
+      (RollHeadingrest.concat(Ntriphotspot_an));
+      (RollHeadingrest.concat(BS));
+      (RollHeadingrest.concat(carrSoln));
+      (RollHeadingrest.concat(BS));
+      (RollHeadingrest.concat(send_Data_Via));
+      (RollHeadingrest.concat(BS));
+      (RollHeadingrest.concat(Ntriphotspot));
   */  (RollHeadingrest.concat(BS));
 
   //(RollHeadingrest.concat(String(Paogi_Shit1)));
