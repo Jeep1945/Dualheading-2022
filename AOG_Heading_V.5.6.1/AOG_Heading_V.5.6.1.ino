@@ -338,7 +338,6 @@ void setup() {
   Serial.println("Start setup");
   //  Serial1.begin(38400, SERIAL_8N1, RX1, TX1);
   Serial1.begin(115200, SERIAL_8N1, RX1, TX1);
-  Serial1.setRxBufferSize(1024); // increasing buffer size ?
   delay(10);
   if ((Dual_Antenna == 1) || (send_amatron_nmea = 1)) {
     Serial2.begin(115200, SERIAL_8N1, RX2, TX2);
