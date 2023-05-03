@@ -12,11 +12,12 @@ void connectToNtrip_Eth() {
     Serial.println("");
     Serial.println("Requesting SourceTable by Ethernet");
     delay(10);
-    Eth_udpNtrip_Router.begin(localPort);
+    //Eth_udpNtrip_Router.begin(localPort);
+    Eth_udpNtrip_Router.begin(8888);
     if (ntrip_e.reqSrcTbl(Ntrip_host, Ntrip_httpPort)) {
       char buffer[1024];
       delay(1000);
-      // Serial.println(" Hallo 1 ");
+      Serial.println(" Hallo 1 ntrip_e ");
       while (ntrip_e.available()) {
         ntrip_e.readLine(buffer, sizeof(buffer));
         Serial.print(" Buffer by Ethernet : ");

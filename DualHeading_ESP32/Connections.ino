@@ -97,7 +97,7 @@ void Ntrip_choice() {
     Ntrip_user1.toCharArray(Ntrip_user, Ntrip_user1.length() + 1);      //"ntrip caster's client user";
     Ntrip_passwd1.toCharArray(Ntrip_passwd, Ntrip_passwd1.length() + 1);     //"ntrip caster's client password";
     Ntrip_httpPort = Ntrip_httpPort1;      //port 2101 is default port of NTRIP caster
-    GGA_Send_Back_Time1 = GGA_Send_Back_Time;
+    GGA_Send_Back_Time = GGA_Send_Back_Time1;
   }
   else {
     Ntrip_host2.toCharArray(Ntrip_host, Ntrip_host2.length() + 1);      //"ntrip caster host";
@@ -105,7 +105,7 @@ void Ntrip_choice() {
     Ntrip_user2.toCharArray(Ntrip_user, Ntrip_user2.length() + 1);      //"ntrip caster's client user";
     Ntrip_passwd2.toCharArray(Ntrip_passwd, Ntrip_passwd2.length() + 1);     //"ntrip caster's client password";
     Ntrip_httpPort = Ntrip_httpPort2;      //port 2101 is default port of NTRIP caster
-    GGA_Send_Back_Time2 = GGA_Send_Back_Time;
+    GGA_Send_Back_Time = GGA_Send_Back_Time2;
   }
 }
 //**************************************************************************************

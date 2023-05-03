@@ -1,5 +1,5 @@
 
-String VERS = "Version DualHeading_ESP32 14.1.2023";
+String VERS = "Version DualHeading_ESP32_03.05.2023";
 
 // AAA_Readme for instructions
 
@@ -7,24 +7,25 @@ String VERS = "Version DualHeading_ESP32 14.1.2023";
 //  +++++++++++++++++++++++++++++++  BEGIN Setup +++++++++++++++++++++++++++++++++++++++
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-int AntDistance = 95;       // distance between the two antennas in cm,+, 0 for automatic distance
+int AntDistance = 115;       // distance between the two antennas in cm,+, 0 for automatic distance
 int tractorhight = 280;   // roll is in Position calculated, in AgOpenGPS mit 0 cm
-int WiFi_scan_Delay = 1;      // for router use 50 sec delay
 int Dual_Antenna = 1;  // 1: for Dualantenna, 0: for single antenna;
 int send_amatron_nmea = 0;    // 1: for sending, 0: for not
 byte Eth_CS_PIN = 5;       //CS PIN with SPI Ethernet hardware W 5500  SPI config: MOSI 23 / MISO 19 / CLK18 / CS5, GND, 3.3V
 int OTA_active = 0;     // 0, no OTA possible, 1 OTA for 60 sec after Start
-double IMU_MPU6050 = 1;       // 1 to 10   1:Heading from Dual   10: Heading from MPU
+int rollaktiv = 1;     // 0: no roll  1: roll activated in Dualheading
+int IMU_MPU6050 = 1;       // 1: to 10   1: from Dual   10: from MPU
 int IMU_MPU6050_direction = 2;       //Drivedirection  Y=1:  -Y=2:  X=3:  -X=4:
-int Roll_Dual_MPU = 1;       // from 1 to 10 1: Roll from Dual   10: Roll from MPU
+int Roll_Dual_MPU = 1;       // from 1 to 10 1: from Dual   10: from MPU
 int move_line_buttons = 0;       // 0: no   1: buttons to move AB line
-int Headingfilter = 5;       // 1: no   10: most filter
-//  IMPORTANT  // For serial USB 38400 baude
-// you have to use the new PVT config
+int Headingfilter = 1;       // 1: no   10: most filter
+int WiFi_scan_Delay = 1;      // wait to scan, for router use 50 sec delay
+#define WIFI_TIMEOUT_MS 10  // how long try to connet to WiFi in sec
+byte Ethernet_3rd = 5 ;     //{ 192, 168,     [1]   , 124 };//3rd nummer of IP address to send UDP data to
 
 int send_Data_Via = 1;       // send Data via  0: USB, 1: Ethernet, 2: WiFi with router and Ntrip from AOG 3; WiFi to tablet
 
-int Ntriphotspot = 2;  // 0: Ntrip from AOG(USB or by Ethernet)   1: Ntrip by Ethernet via Router
+int Ntriphotspot = 2;  // 0: Ntrip from AOG(USB or by Ethernet   1: Ntrip by Ethernet via Router
 //                        2: Ntrip by WiFi via Hotspot or Router  3: Ntrip by WiFi via Router from AOG
 
 //  if router exists, use 1. Network for him
@@ -44,15 +45,12 @@ char WIFI_Password6[24] =  "";        // WiFi network password
 char WIFI_Network7[24] =  "";            // WiFi network Client name
 char WIFI_Password7[24] =  "";        // WiFi network password
 
-#define WIFI_TIMEOUT_MS 50000
-
-
-String Ntrip_host1 = "";       // 1. "ntrip caster host";
+String Ntrip_host1 = "";       // 1. "ntrip IP adress";
 String Ntrip_mntpnt1 = "";      // 1. "ntrip caster's mountpoint";
 String Ntrip_user1 = "";       // 1. "ntrip caster's client user";
 String Ntrip_passwd1 = "";      // 1. "ntrip caster's client password";
 int Ntrip_httpPort1 = 2101;      // 1. port 2101 is default port of NTRIP caster
-int GGA_Send_Back_Time1 = 0;  // after how many seconds a GGA msg is send back to Nripserver
+int GGA_Send_Back_Time1 = 10;  // after how many seconds a GGA msg is send back to Nripserver
 
 String Ntrip_host2 = "";       // 2. "ntrip caster host";
 String Ntrip_mntpnt2 = "";      // 2. "ntrip caster's mountpoint";
@@ -160,16 +158,14 @@ int Ntrip_httpPort;      //port 2101 is default port of NTRIP caster
 int GGA_Send_Back_Time = 0;
 
 //static IP for WiFi to Router
-byte myip[4] = { 192, 168, 1, 79 };     // Roofcontrol module
+//byte myip[4] = { 192, 168, 1, 79 };     // Roofcontrol module
 byte gwip[4] = { 192, 168, 1, 1 };      // Gateway IP also used if Accesspoint created
 byte mask[4] = { 255, 255, 255, 0 };
 byte myDNS[4] = { 8, 8, 8, 8 };         //optional
-byte ipDestination[4] = { 192, 168, 1, 255}; //IP address of router to send UDP data to
-//byte ipDestination[4] = { 10, 0, 0, 18};       //IP address of router to send UDP data to
-byte myIPEnding = 79;             //ending of IP adress x.x.x.79 of ESP32
 
 // Ethernet
 byte Eth_myip[4] = { 192, 168, 1, 124 };//IP address to send UDP data to
+//byte Eth_myip[4] = { 10, 0, 0, 124 };//IP address to send UDP data to
 //byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0xB3, 0x1B}; // original
 byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x00, 0x9A };
 byte Eth_ipDest_ending = 100; //ending of IP address to send UDP data to router
@@ -177,19 +173,25 @@ unsigned int portMy = 5124;             //this is port of this module: Autosteer
 unsigned int AOGNtripPort = 2233;       //port NTRIP data from AOG comes in
 unsigned int portDestination = 9999;    //Port of AOG that listens
 unsigned int localPort = 8888;       // local port to listen for UDP packets
-bool Ethernet_running = false;
+bool Ethernet_running = false, send_IP_back = false;
 char Eth_NTRIP_packetBuffer[512];// buffer for receiving and sending data
 byte ReplyBufferPAOGI[120] = "";        // a string to send back
+byte ReplyBufferAGIO[120] = "";
 int m;
+unsigned int packetLength;
+unsigned long send_IP_back_time = millis();
 
 IPAddress Eth_ipDestination;
 IPAddress ipDestination1;
+IPAddress src_ip; 
 byte my_WiFi_Mode = 0;  // WIFI_STA = 1 = Workstation  WIFI_AP = 2  = Accesspoint
 
 
 // An EthernetUDP instance to let us send and receive packets over UDP
 NTRIPClient_Eth ntrip_e;
 NTRIPClient_WiFi ntrip_c;
+EthernetUDP EthUDPToAOG;
+EthernetUDP EthUDPFromAOG;
 EthernetUDP Eth_udpPAOGI;
 EthernetUDP Eth_udpNtrip;
 EthernetUDP Eth_udpNtrip_Router;
@@ -388,7 +390,7 @@ void setup() {
 
   Serial1.begin(115200, SERIAL_8N1, RX1, TX1);
   delay(10);
-  if ((Dual_Antenna == 1) || (send_amatron_nmea = 1)) {
+  if ((Dual_Antenna == 1) || (send_amatron_nmea == 1)) {
     Serial2.begin(115200, SERIAL_8N1, RX2, TX2);
   }
   pinMode(Button_ReScan, INPUT_PULLUP);
@@ -534,7 +536,10 @@ void setup() {
 
 void loop() {
 
-  // read Date from MPU6050, and/or from 3 buttons to move the line
+   packetLength = EthUDPFromAOG.parsePacket();
+   if (packetLength > 0)  read_Eth_AGIO();
+
+ // read Date from MPU6050, and/or from 3 buttons to move the line
   if (move_line_buttons == 1) button_linemove();
 
   // if ntrip lost, try do connect with second Caster
@@ -602,7 +607,7 @@ void loop() {
 
   // If RTCM3 comes in received by Ethernet from Router ####################################
   if ((send_Data_Via == 1) && (Ntriphotspot == 1) && (ntrip_from_AgopenGPS == 0) && (Ethernet_running)) { //  Ntrip_begin_Time
-    if (ntrip_e.available()) {         // If RTCM3 comes in received by WIFI
+    if (ntrip_e.available()) {         // If RTCM3 comes in received by Ethernet
       Serial1.write(ntrip_e.read());   // read RTCM3  and send from ESP32 16 to simpleRTK RX 1. Antenna = RTCM
     }
   }
@@ -644,7 +649,7 @@ void loop() {
 
   //  Send GGA MSG back to Base     ###########################################################################
   if ((GGA_Send_Back_Time != 0) && ((send_Data_Via == 2) || (Ntriphotspot == 2)))  sendGGA_WiFi();
-  if ((GGA_Send_Back_Time != 0) && (Ntriphotspot == 0))  sendGGA_Eth();
+  if ((GGA_Send_Back_Time != 0) && (Ntriphotspot == 1))  sendGGA_Eth();
 
   //  read UBX msg from F9P (heading)    ######################################################################
   if (Dual_Antenna == 1) {
@@ -681,7 +686,7 @@ void loop() {
   }
 
   //  LED on == no WiFi or Ethernet, off == WiFi or Ethernet   #########################################
-  if ((send_Data_Via > 0) && (Ntriphotspot_an == 0)) {
+/*  if ((send_Data_Via > 0) && (Ntriphotspot_an == 0)) {
     if ((WiFi.status() == WL_CONNECTED) || (Ethernet_running)) {
       if ((millis() - WiFi_blink_Time) < 500) {
         digitalWrite(LED_ntrip_ON, HIGH);
@@ -695,7 +700,7 @@ void loop() {
       digitalWrite(LED_ntrip_ON, HIGH);
     }
   }
-
+*/
   //  LED on == no Ntrip from ESP32, off == Ntrip from ESP32   #########################################
   if ((Ntriphotspot == 1) || (Ntriphotspot == 2)) {
     if (Ntriphotspot_an == 1) {

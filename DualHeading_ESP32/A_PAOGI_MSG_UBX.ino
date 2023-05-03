@@ -74,7 +74,7 @@ void PAOGI1_builder() {
   (RollHeadingrest.concat(BS));
 
 
-//    (RollHeadingrest.concat(heading2));
+  (RollHeadingrest.concat(String(roll_MPU6050)));
 //    (RollHeadingrest.concat(BS));
   /*    (RollHeadingrest.concat(GGDs));
     (RollHeadingrest.concat(BS));
@@ -82,7 +82,7 @@ void PAOGI1_builder() {
     (RollHeadingrest.concat(BS));
     (RollHeadingrest.concat(String(heading_MPU6050)));
     (RollHeadingrest.concat(BS));
-*/    (RollHeadingrest.concat(headingUBX));
+*/  //   (RollHeadingrest.concat(headingUBX));
 //    (RollHeadingrest.concat(BS));
 //    (RollHeadingrest.concat(roll2));
 //    (RollHeadingrest.concat(BS));

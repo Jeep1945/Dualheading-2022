@@ -28,9 +28,11 @@ void rollcalc()
   }
   rollCorrectionDistance = sin((roll) / PI180) * tractorhight;  // roll deviation
   baselineHorizontal = (cos((roll) / PI180) * baseline + 2 * (ABline_Direction[1] * ABline_Direction[2]));
-  if (abs(roll) > 30) {
+  if ((rollaktiv == 0) || (abs(roll) > 30)) {
     rollCorrectionDistance = 0;
     baselineHorizontal = 2 * (ABline_Direction[1] * ABline_Direction[2]);
+    // baselineHorizontal =  0;
+    if (rollaktiv == 0) baselineHorizontal = 0;
   }
   rollnordabs = (sin(heading  / PI180) * rollCorrectionDistance);
   rollnordabs += (sin(heading  / PI180) * (0.5 * baselineHorizontal));

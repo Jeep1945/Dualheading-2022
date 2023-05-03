@@ -99,7 +99,7 @@ void connectToWiFi() {
 
     unsigned long startAttemptTime = millis();
 
-    while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < WIFI_TIMEOUT_MS) {
+    while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < WIFI_TIMEOUT_MS * 1000) {
       delay(300);
       //      Serial.print(".");
     }
@@ -126,26 +126,15 @@ void connectToWiFi() {
       Serial.print("IP address: ");
       IPAddress myIP = WiFi.localIP();
       Serial.println(myIP);
-      //after connecting get IP from router -> change it to x.x.x.IP Ending (from settings)
-      myIP[3] = myIPEnding; //set ESP32 IP to x.x.x.myIP_ending
-      Serial.print("changing IP to: ");
-      Serial.println(myIP);
       IPAddress gwIP = WiFi.gatewayIP();
-      if (!WiFi.config(myIP, gwIP, mask, gwIP)) {
-        Serial.println("Network failed to configure");
-      }
-      delay(200);
+      Serial.print("Gateway IP - Address : ");
+      Serial.println(gwIP);
       Serial.print("Connected IP - Address : ");
       myIP = WiFi.localIP();
       ipDestination1 = myIP;
       ipDestination1[3] = 255;
       Serial.println(ipDestination1);
-      Serial.print("Gateway IP - Address : ");
-      Serial.println(gwIP);
-      ipDestination[0] = myIP[0];
-      ipDestination[1] = myIP[1];
-      ipDestination[2] = myIP[2];
-      ipDestination[3] = 255;//set IP to x.x.x.255 according to actual network
+
       digitalWrite(LED_ntrip_ON, LOW);
       my_WiFi_Mode = 1;// WIFI_STA;
       if (udpNtrip.listen(AOGNtripPort))
