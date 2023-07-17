@@ -225,8 +225,8 @@ void sendAMATRON() {
   {
     if (GGASatz_Korr.substring(46, 47) == "E" || GGASatz_Korr.substring(46, 47) == "W")                 //GGA-Satz-Prüfung Meyer
       Serial2.println(GGASatz_Korr);
-    Serial2.println(VTGSatz_Korr);
-    Serial2.println(ZDASatz);
+      Serial2.println(VTGSatz_Korr);
+      Serial2.println(ZDASatz);
 
     if (debugmode_amatron) {
       Serial.println(GGASatz_Korr);

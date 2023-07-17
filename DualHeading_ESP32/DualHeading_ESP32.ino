@@ -1,5 +1,12 @@
 
-String VERS = "Version DualHeading_ESP32_03.05.2023";
+String VERS = "Version Dualheading_ESP32_17.07.2023";
+
+// news
+/*  Rollfilter
+ *  3rd number of IP address to send UDP data to
+ *  Headingfilter increases at low speed 3 km/h
+ *  resetbutton for ethernet PIN 13
+ */
 
 // AAA_Readme for instructions
 
@@ -7,8 +14,8 @@ String VERS = "Version DualHeading_ESP32_03.05.2023";
 //  +++++++++++++++++++++++++++++++  BEGIN Setup +++++++++++++++++++++++++++++++++++++++
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-int AntDistance = 115;       // distance between the two antennas in cm,+, 0 for automatic distance
-int tractorhight = 280;   // roll is in Position calculated, in AgOpenGPS mit 0 cm
+int AntDistance = 198;       // distance between the two antennas in cm,+,
+int tractorhight = 265;   // roll is in Position calculated,
 int Dual_Antenna = 1;  // 1: for Dualantenna, 0: for single antenna;
 int send_amatron_nmea = 0;    // 1: for sending, 0: for not
 byte Eth_CS_PIN = 5;       //CS PIN with SPI Ethernet hardware W 5500  SPI config: MOSI 23 / MISO 19 / CLK18 / CS5, GND, 3.3V
@@ -19,13 +26,14 @@ int IMU_MPU6050_direction = 2;       //Drivedirection  Y=1:  -Y=2:  X=3:  -X=4:
 int Roll_Dual_MPU = 1;       // from 1 to 10 1: from Dual   10: from MPU
 int move_line_buttons = 0;       // 0: no   1: buttons to move AB line
 int Headingfilter = 1;       // 1: no   10: most filter
+int Rollfilter = 10;       // 1: no   10: most filter
 int WiFi_scan_Delay = 1;      // wait to scan, for router use 50 sec delay
 #define WIFI_TIMEOUT_MS 10  // how long try to connet to WiFi in sec
-byte Ethernet_3rd = 5 ;     //{ 192, 168,     [1]   , 124 };//3rd nummer of IP address to send UDP data to
+byte Ethernet_3rd = 1 ;     //{ 192, 168,     [1]   , 124 };//3rd number of IP address to send UDP data to
 
 int send_Data_Via = 1;       // send Data via  0: USB, 1: Ethernet, 2: WiFi with router and Ntrip from AOG 3; WiFi to tablet
 
-int Ntriphotspot = 2;  // 0: Ntrip from AOG(USB or by Ethernet   1: Ntrip by Ethernet via Router
+int Ntriphotspot = 0;  // 0: Ntrip from AOG(USB or by Ethernet   1: Ntrip by Ethernet via Router
 //                        2: Ntrip by WiFi via Hotspot or Router  3: Ntrip by WiFi via Router from AOG
 
 //  if router exists, use 1. Network for him
@@ -45,12 +53,12 @@ char WIFI_Password6[24] =  "";        // WiFi network password
 char WIFI_Network7[24] =  "";            // WiFi network Client name
 char WIFI_Password7[24] =  "";        // WiFi network password
 
-String Ntrip_host1 = "";       // 1. "ntrip IP adress";
+String Ntrip_host1 = "";       // 1. "ntrip caster host";
 String Ntrip_mntpnt1 = "";      // 1. "ntrip caster's mountpoint";
 String Ntrip_user1 = "";       // 1. "ntrip caster's client user";
 String Ntrip_passwd1 = "";      // 1. "ntrip caster's client password";
 int Ntrip_httpPort1 = 2101;      // 1. port 2101 is default port of NTRIP caster
-int GGA_Send_Back_Time1 = 10;  // after how many seconds a GGA msg is send back to Nripserver
+int GGA_Send_Back_Time1 = 0;  // after how many seconds a GGA msg is send back to Nripserver
 
 String Ntrip_host2 = "";       // 2. "ntrip caster host";
 String Ntrip_mntpnt2 = "";      // 2. "ntrip caster's mountpoint";
@@ -110,6 +118,7 @@ int timeoutRouter = 600;                 //time (s) to hold AP for OTA
 #define Button_left   12
 #define Button_middle 14
 #define Button_right  26
+#define Ethernet_reset  13
 
 
 //loop time variables in microseconds
@@ -141,11 +150,11 @@ unsigned long Single_begin_Time = millis();
 unsigned long Single_begin_Time_VTG = millis();
 unsigned long lastTime_heading = millis(), MPU_Time = millis();
 unsigned long Button_delay40 = millis(), Button_delay41 = millis(), Button_delay42 = millis();
-int durchlauf_nord = 0, durchlauf_east = 0, WiFi_scan_Attempt = 1;
+int WiFi_scan_Attempt = 1;
 double nordWinkel_old, eastWinkel_old;
 int ntrip_from_AgopenGPS = 0, ntrip_attempt = 0;
 bool network_found = false;
-int buttonState = 0;
+int buttonState = 0, buttonState_Eth;
 byte IPadress[4] = { 0, 0, 0, 0 };
 int net_found = 0, Ntriphotspot_an = 0, WiFi_an = 0;
 #define Button_ReScan 4  // pin 4  if button pressed, WiFi scan is starting
@@ -183,7 +192,7 @@ unsigned long send_IP_back_time = millis();
 
 IPAddress Eth_ipDestination;
 IPAddress ipDestination1;
-IPAddress src_ip; 
+IPAddress src_ip;
 byte my_WiFi_Mode = 0;  // WIFI_STA = 1 = Workstation  WIFI_AP = 2  = Accesspoint
 
 
@@ -216,6 +225,7 @@ double relPosD, relPosDH;
 double rollzuvor = 0;
 double PI180 = 57.295791;
 double hzuvor[10], hzuvormin, hzuvormax;
+double Rzuvor[10];
 double headingcorrectur = 0, rollcorrectur = 0;
 double baseline, baseline1, baselineHorizontal;
 double fixnorddeci, fixeastdeci; // coordinates in decimalen
@@ -399,8 +409,10 @@ void setup() {
   pinMode(Button_left, INPUT_PULLUP);
   pinMode(Button_middle, INPUT_PULLUP);
   pinMode(Button_right, INPUT_PULLUP);
+  pinMode(Ethernet_reset, INPUT_PULLUP);
 
-  startSend_back_Time = millis() - (GGA_Send_Back_Time * 1000);
+
+  startSend_back_Time = millis() - (10000);
   ntriptime_from_AgopenGPS = millis();
   WiFi_scan_Delay_Time = millis();
   Amatron_begin_Time = millis();
@@ -420,6 +432,7 @@ void setup() {
   Serial.print(" Roll_Dual_MPU : "); Serial.println(Roll_Dual_MPU);   // from 1 to 10 1: from Dual   10: from MPU
   Serial.print(" move_line_buttons : "); Serial.println(move_line_buttons);       // 0: no   1: buttons to move AB line
   Serial.print(" Headingfilter : "); Serial.println(Headingfilter);       // 1: no   10: most filter
+  Serial.print(" Rollfilter : "); Serial.println(Rollfilter);       // 1: no   10: most filter
   Serial.print(" send_Data_Via : "); Serial.println(send_Data_Via);
   Serial.print(" Ntriphotspot : "); Serial.println(Ntriphotspot);
   if  ((WIFI_Network1 != " ") || (Ntriphotspot > 1) || (send_Data_Via == 2)) {
@@ -536,11 +549,16 @@ void setup() {
 
 void loop() {
 
-   packetLength = EthUDPFromAOG.parsePacket();
-   if (packetLength > 0)  read_Eth_AGIO();
+  packetLength = EthUDPFromAOG.parsePacket();
+  if (packetLength > 0)  read_Eth_AGIO();
 
- // read Date from MPU6050, and/or from 3 buttons to move the line
+  // read Date from MPU6050, and/or from 3 buttons to move the line
   if (move_line_buttons == 1) button_linemove();
+
+  // connect ethernet again
+  buttonState_Eth = digitalRead(Ethernet_reset);
+  if ((buttonState_Eth == 0) && (Ntriphotspot < 2) && (send_Data_Via == 1) && (!Ethernet_running))
+    Eth_Start();
 
   // if ntrip lost, try do connect with second Caster
   if (((Ntriphotspot == 1) || (Ntriphotspot == 2)) && (Ntriphotspot_an == 0) && ((WiFi.status() == WL_CONNECTED) || (Ethernet_running))) {   //  if Ntrip should work
@@ -674,7 +692,7 @@ void loop() {
       if (CK_A == ubxmessage.rawBuffer[70] && CK_B == ubxmessage.rawBuffer[71]) {
 
         if (IMU_MPU6050 > 1) Heading_MPU6050();  // to correct the drift
-        heading_relposnet();
+        heading_relposned();
         rollundheading();   // calculate roll        ########################################################
         PAOGI1_builder();   // built the PAOGI MSG   ########################################################
       }
@@ -686,21 +704,21 @@ void loop() {
   }
 
   //  LED on == no WiFi or Ethernet, off == WiFi or Ethernet   #########################################
-/*  if ((send_Data_Via > 0) && (Ntriphotspot_an == 0)) {
-    if ((WiFi.status() == WL_CONNECTED) || (Ethernet_running)) {
-      if ((millis() - WiFi_blink_Time) < 500) {
-        digitalWrite(LED_ntrip_ON, HIGH);
+  /*  if ((send_Data_Via > 0) && (Ntriphotspot_an == 0)) {
+      if ((WiFi.status() == WL_CONNECTED) || (Ethernet_running)) {
+        if ((millis() - WiFi_blink_Time) < 500) {
+          digitalWrite(LED_ntrip_ON, HIGH);
+        }
+        else {
+          digitalWrite(LED_ntrip_ON, LOW);
+          WiFi_blink_Time = millis();
+        }
       }
       else {
-        digitalWrite(LED_ntrip_ON, LOW);
-        WiFi_blink_Time = millis();
+        digitalWrite(LED_ntrip_ON, HIGH);
       }
     }
-    else {
-      digitalWrite(LED_ntrip_ON, HIGH);
-    }
-  }
-*/
+  */
   //  LED on == no Ntrip from ESP32, off == Ntrip from ESP32   #########################################
   if ((Ntriphotspot == 1) || (Ntriphotspot == 2)) {
     if (Ntriphotspot_an == 1) {

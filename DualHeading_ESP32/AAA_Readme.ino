@@ -26,3 +26,4 @@
 // you get install 2 Ntrips and if you loose first, it changes automaticly to the second
 // IMU_MPU6050 = 1;       // 1: to 10   1: from Dual   10: from MPU 
 // move_line_buttons = 1;       // 0: no   1: by ethernet buttons to move AB line
+// connect ethernet again with button pin 13

@@ -13,7 +13,7 @@ void  Coordinaten_check() {
       rollnord_before = nordWinkel;
       fixnorddeci_before = fixnorddeci;
       Coodinate1_check2 = 0;
-      }
+    }
   }
   else {
     Paogi_true_UBX = false;
@@ -52,7 +52,7 @@ void  Coordinaten_check() {
 
 // *********************************************************************************
 
-void heading_relposnet() {
+void heading_relposned() {
   //begin parser
 
   headingUBX  = (long)ubxmessage.rawBuffer[24 + 6] ;            // HeadingUBX read
@@ -118,7 +118,17 @@ void heading_relposnet() {
 
   if ((GGDs - headingUBX) > 90)    GGDs -= 360;
   if ((GGDs - headingUBX) < -90)   GGDs += 360;
-  heading2 = headingUBX * (1 - Headingfilter / 10) + GGDs * (Headingfilter / 10);
+
+  double Headingfilter1 = Headingfilter;
+  double speed_kmh = speeed/1.852;
+  if (speed_kmh < 3) {
+    Headingfilter1 = Headingfilter + (3 - speed_kmh);
+    Headingfilter1 = constrain(Headingfilter1, 1, 10);
+    heading2 = headingUBX * (1 - Headingfilter1 / 10) + GGDs * (Headingfilter1 / 10);
+  }
+  else
+    heading2 = Headingfilter;
+
   if (GGDs > 360)   GGDs -= 360;
   if (GGDs < 0)   GGDs += 360;
   if (heading2 > 360)   heading2 -= 360;
@@ -131,7 +141,7 @@ void heading_relposnet() {
 
   if (IMU_MPU6050 > 1) {
     if (abs(hzuvormax - hzuvormin) < 4) { //1000
-    //Serial.println(carrSoln);
+      //Serial.println(carrSoln);
       if (carrSoln > 0) {  // >
         if (millis() - lastTime_heading > 2000) {
           heading_MPU6050_offset = heading_MPU6050 - GGDs;
@@ -147,8 +157,8 @@ void heading_relposnet() {
       heading_source = 1;
     }
   }
-    hzuvormax = GGDs;
-    hzuvormin = GGDs;
+  hzuvormax = GGDs;
+  hzuvormin = GGDs;
 
   if (debugmode) {
     Serial.print("  h : ");
