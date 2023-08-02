@@ -121,13 +121,11 @@ void heading_relposned() {
 
   double Headingfilter1 = Headingfilter;
   double speed_kmh = speeed/1.852;
-  if (speed_kmh < 3) {
-    Headingfilter1 = Headingfilter + (3 - speed_kmh);
+  if (speed_kmh < 4) {
+    Headingfilter1 = Headingfilter + (4 - speed_kmh);
     Headingfilter1 = constrain(Headingfilter1, 1, 10);
-    heading2 = headingUBX * (1 - Headingfilter1 / 10) + GGDs * (Headingfilter1 / 10);
   }
-  else
-    heading2 = Headingfilter;
+    heading2 = headingUBX * (1 - Headingfilter1 / 10) + GGDs * (Headingfilter1 / 10);
 
   if (GGDs > 360)   GGDs -= 360;
   if (GGDs < 0)   GGDs += 360;
