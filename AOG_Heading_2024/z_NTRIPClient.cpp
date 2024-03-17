@@ -7,12 +7,12 @@ bool NTRIPClient_WiFi::reqSrcTbl(char* host, int &port)
 bool NTRIPClient_WiFi::reqRaw(char* host, int &port, char* mntpnt, char* user, char* psw)
 {
   if (!connect(host, port))return false;
-  String _accept = "*/*";
+  //String _accept = "*/*";
   String _userAgent = "NTRIP ESP32NTRIPClient";
   //  String _userAgent = "NTRIPClient for Arduino v1.0";
   String p = "GET /";
   String auth = "";
-  Serial.println("Requesting NTRIP");
+  Serial.println("Requesting NTRIP by WiFi");
 
   p = p + mntpnt + String(" HTTP/1.0\r\n"
                           "User-Agent: " + _userAgent + "\r\n");
@@ -44,7 +44,7 @@ bool NTRIPClient_WiFi::reqRaw(char* host, int &port, char* mntpnt, char* user, c
       //Serial.println("Client Timeout !");
       return false;
     }
-    delay(100);
+    delay(10);
   }
   char buffer[50];
   readLine(buffer, sizeof(buffer));
@@ -82,7 +82,7 @@ bool NTRIPClient_Eth::reqSrcTbl(char* host, int &port)
 bool NTRIPClient_Eth::reqRaw(char* host, int &port, char* mntpnt, char* user, char* psw)
 {
   if (!connect(host, port))return false;
-  String _accept = "*/*";
+  //String _accept = "*/*";
   String _userAgent = "NTRIP ESP32NTRIPClient";
   //  String _userAgent = "NTRIPClient for Arduino v1.0";
   String p = "GET /";

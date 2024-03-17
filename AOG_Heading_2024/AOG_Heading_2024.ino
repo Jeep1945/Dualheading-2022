@@ -1,12 +1,5 @@
 
-String VERS = "Version Dualheading_ESP32_17.07.2023";
-
-// news
-/*  Rollfilter
- *  3rd number of IP address to send UDP data to
- *  Headingfilter increases at low speed 3 km/h
- *  resetbutton for ethernet PIN 13
- */
+String VERS = "Version AOG_Heading_2024_17.03.2024";
 
 // AAA_Readme for instructions
 
@@ -14,27 +7,31 @@ String VERS = "Version Dualheading_ESP32_17.07.2023";
 //  +++++++++++++++++++++++++++++++  BEGIN Setup +++++++++++++++++++++++++++++++++++++++
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-int AntDistance = 198;       // distance between the two antennas in cm,+,
-int tractorhight = 265;   // roll is in Position calculated,
+byte Eth_myip[4] = { 192, 168, 1, 124 };//IP address to send UDP data to
+//byte Eth_myip[4] = { 10, 0, 0, 124 };//IP address to send UDP data to
+byte Ethernet_3rd = 1 ;     //{ 192, 168,     [1]   , 124 };//3rd nummer of IP address to send UDP data to
+
+int AntDistance = 115;       // distance between the two antennas in cm,+
+int tractorhight = 280;   // roll is in Position calculated, in AgOpenGPS mit 0 cm
 int Dual_Antenna = 1;  // 1: for Dualantenna, 0: for single antenna;
-int send_amatron_nmea = 0;    // 1: for sending, 0: for not
+int send_amatron_nmea = 1;    // 1: for sending, 0: for not
+int GNGGAorGPGGA =1 ;  // GNGGA = 1, GPGGA= 2, when send_amatron_nmea = 1;
 byte Eth_CS_PIN = 5;       //CS PIN with SPI Ethernet hardware W 5500  SPI config: MOSI 23 / MISO 19 / CLK18 / CS5, GND, 3.3V
 int OTA_active = 0;     // 0, no OTA possible, 1 OTA for 60 sec after Start
-int rollaktiv = 1;     // 0: no roll  1: roll activated in Dualheading
 int IMU_MPU6050 = 1;       // 1: to 10   1: from Dual   10: from MPU
 int IMU_MPU6050_direction = 2;       //Drivedirection  Y=1:  -Y=2:  X=3:  -X=4:
 int Roll_Dual_MPU = 1;       // from 1 to 10 1: from Dual   10: from MPU
 int move_line_buttons = 0;       // 0: no   1: buttons to move AB line
-int Headingfilter = 1;       // 1: no   10: most filter
-int Rollfilter = 10;       // 1: no   10: most filter
-int WiFi_scan_Delay = 1;      // wait to scan, for router use 50 sec delay
-#define WIFI_TIMEOUT_MS 10  // how long try to connet to WiFi in sec
-byte Ethernet_3rd = 1 ;     //{ 192, 168,     [1]   , 124 };//3rd number of IP address to send UDP data to
+int Headingfilter = 3;       // 1: no   8: most filter
+int Rollfilter = 10;       // 1: no   8: most filter
+int WiFi_scan_Delay = 10;      // wait to scan, for router use 50 sec delay
+#define WIFI_TIMEOUT_MS 10  // how long try to connect to WiFi in sec
 
 int send_Data_Via = 1;       // send Data via  0: USB, 1: Ethernet, 2: WiFi with router and Ntrip from AOG 3; WiFi to tablet
 
 int Ntriphotspot = 0;  // 0: Ntrip from AOG(USB or by Ethernet   1: Ntrip by Ethernet via Router
 //                        2: Ntrip by WiFi via Hotspot or Router  3: Ntrip by WiFi via Router from AOG
+//                        4: no Ntrip at all
 
 //  if router exists, use 1. Network for him
 //  2 - 7 Network and Passwords for Hotspots
@@ -90,6 +87,7 @@ int timeoutRouter = 600;                 //time (s) to hold AP for OTA
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include "zNMEAParser.h"
 
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
@@ -119,7 +117,7 @@ int timeoutRouter = 600;                 //time (s) to hold AP for OTA
 #define Button_middle 14
 #define Button_right  26
 #define Ethernet_reset  13
-
+#define SerialNmea Serial1
 
 //loop time variables in microseconds
 long lastTime = 0;
@@ -147,13 +145,13 @@ unsigned long Amatron_begin_Time = millis();
 unsigned long Ntrip_begin_Time = millis();
 unsigned long OTA_begin_Time = millis();
 unsigned long Single_begin_Time = millis();
-unsigned long Single_begin_Time_VTG = millis();
+unsigned long Single_begin_Time_ZDA = millis(), PVT_send_Time;
 unsigned long lastTime_heading = millis(), MPU_Time = millis();
 unsigned long Button_delay40 = millis(), Button_delay41 = millis(), Button_delay42 = millis();
 int WiFi_scan_Attempt = 1;
 double nordWinkel_old, eastWinkel_old;
 int ntrip_from_AgopenGPS = 0, ntrip_attempt = 0;
-bool network_found = false;
+bool network_found = false, network_scan = false;
 int buttonState = 0, buttonState_Eth;
 byte IPadress[4] = { 0, 0, 0, 0 };
 int net_found = 0, Ntriphotspot_an = 0, WiFi_an = 0;
@@ -164,16 +162,19 @@ char Ntrip_mntpnt[40] = "";      //"ntrip caster's mountpoint";
 char Ntrip_user[40] = "";       //"ntrip caster's client user";
 char Ntrip_passwd[40] = "";      //"ntrip caster's client password";
 int Ntrip_httpPort;      //port 2101 is default port of NTRIP caster
-int GGA_Send_Back_Time = 0;
+int GGA_Send_Back_Time = 0, wait = 30000;
+int priority = 1;
 
 //static IP for WiFi to Router
-//byte myip[4] = { 192, 168, 1, 79 };     // Roofcontrol module
+byte myip[4] = { 192, 168, 1, 79 };     // Roofcontrol module
 byte gwip[4] = { 192, 168, 1, 1 };      // Gateway IP also used if Accesspoint created
 byte mask[4] = { 255, 255, 255, 0 };
 byte myDNS[4] = { 8, 8, 8, 8 };         //optional
+byte ipDestination[4] = { 192, 168, 1, 255}; //IP address of router to send UDP data to
+byte myIPEnding = 79;             //ending of IP adress x.x.x.79 of ESP32
 
 // Ethernet
-byte Eth_myip[4] = { 192, 168, 1, 124 };//IP address to send UDP data to
+//byte Eth_myip[4] = { 192, 168, 1, 124 };//IP address to send UDP data to
 //byte Eth_myip[4] = { 10, 0, 0, 124 };//IP address to send UDP data to
 //byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0xB3, 0x1B}; // original
 byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x00, 0x9A };
@@ -212,12 +213,16 @@ WiFiServer server(80);
 MPU6050 mpu;
 
 // Heading
-float heading, heading1, heading2, headingUBX, heading_diff, headingzuvor = 0, headingzuvorVTG;
+float heading, heading1, heading2, headingUBX, headingzuvor = 0;
+String heading_str, heading_ubx_str;
+char heading_ch[20], heading_UBX_ch[20];
 double headingUBXmin, headingUBXmax, headingVTGmin, headingVTGmax;
-double speeed = 0, headingnord;
+double speeed = 0;
 
 // roll
-float roll, rollCorrectionDistance = 0.00, GGDs;
+float roll, rollCorrectionDistance = 0.00, GGDs, GGDs1, GGDs2, GRDs, GRDs1, GRDs2;
+String roll_str;
+char roll_ch[10];
 double rollnord = 0.0, rolleast = 0.0;
 double rollnord1 = 0.0, rolleast1 = 0.0;
 double rollnord_before = 0.0, rolleast_before = 0.0;
@@ -236,49 +241,82 @@ byte CK_A = 0, CK_B = 0;
 byte incoming_char;
 
 // NMEA erstellen
-bool NMEA_OK = true;
-int argGGA_Anz[17], argGGA_Anz_ende, arg_MPU_buttons[7];
-int inByte;
-String argGGA9, GGA_Sealevel, GGA_Age;
-String argGGA10;
-String argGGA11, GGA_time;
+byte inByte;
+byte inByte_UBX;
 String Button_left_S, Button_middle_S, Button_right_S;
 String MPU_Heading_S, MPU_Roll_S, MPU_Yaw_S, MPU6050_Data;
-int start = 0, GGASats;
-String nmea = "", GGAdaten = "", GGAdaten1 = "", VTGdaten = "", VTGspeed = "", VTGheadingnord = "";
-String VTGSatz = "", GGASatz_old = "", GGAnord = "", GGAeast = "", GGAZeit = "", GGAWestEast = "", GGANordSued = "";
-int j = 0, j2 = 0, jGGA = 0, jGGA2 = 0, jGGA3 = 0, jGGA4 = 0, jGGA5 = 0, jGGA6 = 0, jGGA7 = 0, jGGA78 = 0;
-int jVTG1 = 0, jVTG2 = 0, jVTG3 = 0, jVTG4 = 0, jVTG5 = 0;
-String GPSquali = "", WEcoordinaten, NScoordinaten, GGASat, GGAHDop;
-String GGASatz = "", GGASatz_Korr, VTGSatz_Korr = "", GGASatz_send_back = "";
-int GPSqualin1 = 0, GPSqualin2 = 1, GPSqualinzuvor = 1, GPSqualintime = 1, GGA_check = 0;
-String GGA_hDops, ZDASatz = "", GGA_hDop, GGA_seahigh;
-int  i = 0, ij = 0;
-double GGAZeitNummerbevor, GGAZeitNummer;
-double GGAage, GGA_seahighs;
+int start = 0, strglen;
+String nmea = "";
+String GGAnord = "", GGAeast = "", GGAWestEast = "", GGANordSued = "";
+String GPSqualistr = "", WEcoordinaten, NScoordinaten;
+String GGASatz = "", VTGSatz = "", VTGSatz_Korr = "", GGASatz_send_back = "";
+int GPSqualin1 = 0, GPSqualintime = 1;
+String ZDASatz = "";
+int  i = 0, j = 0, ij = 0, iji = 0;
 double nordWinkel, eastWinkel;
 double fixnorddeci_before = 0.0000, fixeastdeci_before = 0.0000;
 
+/* A parser is declared with 3 handlers at most */
+NMEAParser<3> parser;
+
+// Conversion to Hexidecimal
+const char* asciiHex = "0123456789ABCDEF";
+
+// the new PAOGI sentence buffer
+char GGAnmea[90];
+char GGAnmea_Korr[90];
+char ZDAnmea[50];
+char VTGnmea[60];
+char PAOGI_Msg[150];
+
+// GGA
+char fixTime[12];
+char latitude[15];
+char latNS[3];
+char longitude[15];
+char lonEW[3];
+char fixQuality[2];
+char numSats[4];
+char HDOP[5];
+char altitude[12];
+char seperation[8];
+char ageDGPS[10];
+
+char NScoordinaten_ch[15];
+char WEcoordinaten_ch[15];
+
+// VTG
+char vtgHeading[12] = { };
+char speedKnots[10] = { };
+char speedKm[10] = { };
+
+// ZDA
+char zdatime[12] = { };
+char zdaday[4] = { };
+char zdamonth[4] = { };
+char zdayear[6] = { };
+char zdaltzh[4] = { };
+char zdaltzn[4] = { };
+
 // PAOGI erstellen
-bool Paogi_true_UBX = true, Paogi_true = true;
-String RollHeadingrest = "", RollHeadingshit = "", RollHeadingrest_befor = "", BS = ",";
+bool Paogi_true_UBX = true;
+String BS = ",";
 int Paogi_Long, Coodinate_check1, Coodinate_check2, heading_check1 = 0;
 int Paogi_Long1, Coodinate1_check1, Coodinate1_check2, heading1_check1 = 0;
 int Paogi_Shit = 0, Paogi_Shit1 = 0;
 
 byte UDPPAOGIMsg[100], UDPVTGMsg[40], UDPGGAMsg[90];
-unsigned int Bytelaenge, BytelaengeVTG, BytelaengeGGA;
 byte  ReplyBufferVTG[40] = "", ReplyBufferGGA[90] = "";       // a string to send back
 
 //UBX
-double speedUBXint;
+double velD_UBX_PVT, seahight_PVT, time_UBX_PVT, numSV_UBX_PVT;
+double lon, lati;
+int lonint, latiint;
+double lon_degree, lati_degree;
 String GGA_Sats;
 
 // Chechsum controll
-String checksum = "", checksum_GGA = "", checksum_GGA_send = "", checksum_VTG = "", checksum_VTG_send = "";
-String check_headingroll = "";
-int j_checksum_GGA = 0, j_checksum_VTG = 0;
-
+String checksum = "";
 
 // MPU6050
 String RollHeading = "";
@@ -361,22 +399,58 @@ union UBXMessage {
   byte rawBuffer[72];
 } ubxmessage;
 
+union UBXMessagePVT {
+  struct {
+    uint8_t cls;
+    uint8_t id;
+    uint16_t len;
+    unsigned long iTOW;  //GPS time ms
+    uint16_t year;
+    uint8_t month;
+    uint8_t day;
+    uint8_t hour;
+    uint8_t min;
+    uint8_t sec;
+    uint8_t valid;
+    unsigned long tAcc;
+    long nano;
+    uint8_t fixType;//0 no fix....
+    uint8_t flags;
+    uint8_t flags2;
+    uint8_t numSV; //number of sats
+    long lon;   //deg * 10^-7
+    long lat;   //deg * 10^-7
+    long height;
+    long hMSL;  //heigt above mean sea level mm
+    unsigned long hAcc;
+    unsigned long vAcc;
+    long velN;
+    long velE;
+    long velD;
+    long gSpeed; //Ground Speed mm/s
+    long headMot;
+    unsigned long sAcc;
+    unsigned long headAcc;
+    uint16_t pDOP;
+    uint8_t flags3;
+    uint8_t reserved1[5];
+    long headVeh;
+    int16_t magDec;
+    uint16_t magAcc;
+    uint8_t CK0;
+    uint8_t CK1;
+  } PVT;
+  byte rawBufferPVT[100];
+} ubxmessagePVT;
+
+
 
 //bool debugmode = true;  // GGA,VTG,
 bool debugmode = false;
-//bool debugmode1 = true;  // Heading
-bool debugmode1 = false;
-//  bool debugmode2 = true;  // Deviation
-bool debugmode2 = false;
-//  bool debugmode3 = true;  // roll
-bool debugmode3 = false;
-//bool debugmode_UBX = true;  //  Protocoll UBX einlesen
-bool debugmode_UBX = false;
-//  bool debugProtokoll = true;  //Protocoll TestStation
-bool debugProtokoll = false;
-//bool debugmode_amatron = true;  //Protocoll Amatron
-bool debugmode_amatron = false;
 
+TaskHandle_t taskHandle_Start_connect;
+TaskHandle_t taskHandle_WiFi_NTRIP;
+TaskHandle_t taskHandle_Programm;
 
 
 // ================================================================
@@ -389,40 +463,53 @@ void setup() {
   ubxmessage.rawBuffer[2] = 0x01;
   ubxmessage.rawBuffer[3] = 0x3C;
 
+  ubxmessagePVT.rawBufferPVT[0] = 0xB5;
+  ubxmessagePVT.rawBufferPVT[1] = 0x62;
+  ubxmessagePVT.rawBufferPVT[2] = 0x01;
+  ubxmessagePVT.rawBufferPVT[3] = 0x07;
+
   delay(10);
   Serial.begin(38400);
   delay(10);
   Serial.println("");
+  Serial.println("Start setup");
+  Serial.println("");
   Serial.println(VERS);
   Serial.println("");
-  Serial.println("");
-  Serial.println("Start setup");
 
-  Serial1.begin(115200, SERIAL_8N1, RX1, TX1);
+  SerialNmea.begin(115200, SERIAL_8N1, RX1, TX1);
   delay(10);
   if ((Dual_Antenna == 1) || (send_amatron_nmea == 1)) {
     Serial2.begin(115200, SERIAL_8N1, RX2, TX2);
   }
+  if (Dual_Antenna == 0) send_amatron_nmea = 0;
+
   pinMode(Button_ReScan, INPUT_PULLUP);
   pinMode(LED_ntrip_ON, OUTPUT);
   digitalWrite(LED_ntrip_ON, HIGH);
   pinMode(Button_left, INPUT_PULLUP);
   pinMode(Button_middle, INPUT_PULLUP);
   pinMode(Button_right, INPUT_PULLUP);
-  pinMode(Ethernet_reset, INPUT_PULLUP);
+  pinMode(Ethernet_reset, OUTPUT);
 
-
-  startSend_back_Time = millis() - (10000);
+  startSend_back_Time = millis() - (GGA_Send_Back_Time * 1000);
   ntriptime_from_AgopenGPS = millis();
   WiFi_scan_Delay_Time = millis();
   Amatron_begin_Time = millis();
   OTA_begin_Time = millis();
   WiFi_blink_Time = millis();
+  PVT_send_Time = millis();
+
+  //Prevent W5500 to get into Reset Loop Bug
+  digitalWrite(Ethernet_reset, LOW); //Reset Ethernet Modul
+  delay(300);
+  digitalWrite(Ethernet_reset, HIGH); //Start Ethernet Modul
 
   delay(100);
   Serial.print(" AntDistance : "); Serial.println(AntDistance);       // distance between the two antennas in cm,+, 0 for automatic distance
   Serial.print(" tractorhight : "); Serial.println(tractorhight);   // roll is in Position calculated, in AgOpenGPS mit 0 cm
   Serial.print(" WiFi_scan_Delay : "); Serial.println(WiFi_scan_Delay);      // for router use 50 sec delay
+  Serial.print(" WIFI_TIMEOUT_MS : "); Serial.println(WIFI_TIMEOUT_MS);      // for router use 50 sec delay
   Serial.print(" Dual_Antenna : "); Serial.println(Dual_Antenna);  // 1: for Dualantenna, 0: for single antenna;
   Serial.print(" send_amatron_nmea : "); Serial.println(send_amatron_nmea);    // 1: for sending, 0: for not
   Serial.print(" Eth_CS_PIN : "); Serial.println(Eth_CS_PIN);       //CS PIN with SPI Ethernet hardware W 5500  SPI config: MOSI 23 / MISO 19 / CLK18 / CS5, GND, 3.3V
@@ -432,29 +519,47 @@ void setup() {
   Serial.print(" Roll_Dual_MPU : "); Serial.println(Roll_Dual_MPU);   // from 1 to 10 1: from Dual   10: from MPU
   Serial.print(" move_line_buttons : "); Serial.println(move_line_buttons);       // 0: no   1: buttons to move AB line
   Serial.print(" Headingfilter : "); Serial.println(Headingfilter);       // 1: no   10: most filter
-  Serial.print(" Rollfilter : "); Serial.println(Rollfilter);       // 1: no   10: most filter
+  Serial.print(" Rollfilter : "); Serial.println(Rollfilter);       // 1: no   8: most filter
   Serial.print(" send_Data_Via : "); Serial.println(send_Data_Via);
   Serial.print(" Ntriphotspot : "); Serial.println(Ntriphotspot);
+
+  wait = 100;
   if  ((WIFI_Network1 != " ") || (Ntriphotspot > 1) || (send_Data_Via == 2)) {
     Serial.println("");
   }
   else {
-    Serial.println("Delay_Time ");
+    Serial.println("Wait for Wifi_Scan; delay_Time");
   }
-  delay(5000);
-  Serial.print("Check_connections : ");
-  Check_connections();
-  Serial.println(Conn);
-  delay(1000);
-  if (my_WiFi_Mode != 2) {
-    Start_connections();
-    delay(1000);
-    if ((my_WiFi_Mode == 0) && (OTA_active) || (Ntriphotspot == 3))  WiFi_Start_AP();
+  delay(50);
+  if  ((send_Data_Via == 0) && (Ntriphotspot < 2)) {
+    wait = 500;
   }
-  if ((my_WiFi_Mode != 0) && (OTA_active))  {
-    Serial.println("Hallo OTA is activated");
-    OTA_update_ESP32();
+
+  // the dash means wildcard
+  parser.setErrorHandler(errorHandler);
+  parser.addHandler("G-GGA", GGA_Handler);
+  parser.addHandler("G-VTG", VTG_Handler);
+  if (send_amatron_nmea == 1) {
+    parser.addHandler("G-ZDA", ZDA_Handler);
   }
+
+  if (OTA_begin_Time > (millis() - 90000)) {
+    OTA_update = true;
+    ArduinoOTA.handle();   //  update the ESP32 via WiFi.
+  }
+  else  OTA_update = false;
+
+
+  //delay(5000);
+  //------------------------------------------------------------------------------------------------------------
+  //create a task that will be executed in the Core1code() function, with priority 1 and executed on core 0
+  xTaskCreatePinnedToCore(Core1code, "Core1", 5000, NULL, priority, &taskHandle_Start_connect, 0);
+  delay(wait);
+  //create a task that will be executed in the Core2code() function, with priority 1 and executed on core 1
+  xTaskCreatePinnedToCore(Core2code, "Core2", 5000, NULL, 1, &taskHandle_Programm, 1);
+  delay(wait);
+  //------------------------------------------------------------------------------------------------------------
+
   // initialize device
   if (IMU_MPU6050 > 1) {
     // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -530,12 +635,18 @@ void setup() {
     }
   }
 
-  Headingfilter = constrain(Headingfilter, 1, 10);
-  Roll_Dual_MPU = constrain(Roll_Dual_MPU, 1, 10);
+
+  Headingfilter = constrain(Headingfilter, 1, 8);
+  Roll_Dual_MPU = constrain(Roll_Dual_MPU, 1, 8);
+  if (Roll_Dual_MPU != 1) {
+    Serial.println("");
+    Serial.print("IMU_MPU6050  : ");
+    Serial.println(IMU_MPU6050);
+  }
   Serial.println("");
-  Serial.print("IMU_MPU6050  : ");
-  Serial.println(IMU_MPU6050);
   Serial.println("");
+  Serial.println("");
+  Serial.println(VERS);
   Serial.println("");
   Serial.println("End setup");
   Serial.println("");
@@ -548,196 +659,7 @@ void setup() {
 
 
 void loop() {
-
-  packetLength = EthUDPFromAOG.parsePacket();
-  if (packetLength > 0)  read_Eth_AGIO();
-
-  // read Date from MPU6050, and/or from 3 buttons to move the line
-  if (move_line_buttons == 1) button_linemove();
-
-  // connect ethernet again
-  buttonState_Eth = digitalRead(Ethernet_reset);
-  if ((buttonState_Eth == 0) && (Ntriphotspot < 2) && (send_Data_Via == 1) && (!Ethernet_running))
-    Eth_Start();
-
-  // if ntrip lost, try do connect with second Caster
-  if (((Ntriphotspot == 1) || (Ntriphotspot == 2)) && (Ntriphotspot_an == 0) && ((WiFi.status() == WL_CONNECTED) || (Ethernet_running))) {   //  if Ntrip should work
-    Ntrip_choice();
-  }
-
-  //  End Accesspoint
-  if ((my_WiFi_Mode == 2) && (millis() - OTA_begin_Time > timeoutRouter * 1000)) {
-    WiFi.mode(WIFI_OFF);
-    Serial.println("End Accesspoint");
-    (my_WiFi_Mode = 0);
-  }
-
-
-  //Ethernet Start a new Setup with pressing the button+++++++++++++++++++++++++Markus
-  //buttonState = digitalRead(Button_ReScan);
-  //if ((buttonState == 0) && (Ntriphotspot = 1)) {
-  //  ESP.restart();
-  //}
-
-  //  Start a WiFi scan with pressing the button
-  buttonState = digitalRead(Button_ReScan);
-  if ((buttonState == 0) && (ntrip_from_AgopenGPS == 0) && (Ntriphotspot > 1)) {
-    WiFi.mode(WIFI_OFF);
-    digitalWrite(LED_ntrip_ON, LOW);
-    Network_built_up();
-    if (((my_WiFi_Mode == 0) || (my_WiFi_Mode == 2)) && (OTA_active))  WiFi_Start_AP();
-    OTA_begin_Time = millis();
-    if (OTA_active) OTA_update_ESP32();
-  }
-
-  //  Start up WiFi connection if lost
-  if ((Ntrip_WiFi) && (WiFi.status() != WL_CONNECTED)) {
-    Network_built_up();
-  }
-
-  //  receive RTCM3 data by USB from AOG #############################################
-  //   if ((send_Data_Via == 0) && (Ntriphotspot == 0)
-  if (Serial.available()) {      // If RTCM3 comes in Serial (USB),
-    char C = Serial.read();      // read a byte, then
-    Serial1.write(C);            // send it out Serial1 from PIN 16 to simpleRTK RX1 1. Antenna = RTCM
-    if (C != '  ') {             // if the byte is a newline character
-      ntripcheck();
-    }
-    ntriptime_from_AgopenGPS = millis();
-  }
-  else {
-    ntripcheck();
-  }
-
-  //  receive RTCM3 data by Ethernet from AOG  ##########################################
-  //   if ((send_Data_Via == 1) && (Ntriphotspot == 0)
-  if ((Ethernet_running) && (Ntriphotspot == 0)) {
-    doEthUDPNtrip();  // If RTCM3 comes in received by Ethernet from AOG
-
-  }
-
-  // If RTCM3 comes in received by WiFi from Router ####################################
-  if ((send_Data_Via == 0) && (Ntriphotspot == 2)) { //  Ntrip_begin_Time
-    if (ntrip_c.available()) {         // If RTCM3 comes in received by WIFI
-      Serial1.write(ntrip_c.read());   // read RTCM3  and send from ESP32 16 to simpleRTK RX 1. Antenna = RTCM
-    }
-  }
-
-  // If RTCM3 comes in received by Ethernet from Router ####################################
-  if ((send_Data_Via == 1) && (Ntriphotspot == 1) && (ntrip_from_AgopenGPS == 0) && (Ethernet_running)) { //  Ntrip_begin_Time
-    if (ntrip_e.available()) {         // If RTCM3 comes in received by Ethernet
-      Serial1.write(ntrip_e.read());   // read RTCM3  and send from ESP32 16 to simpleRTK RX 1. Antenna = RTCM
-    }
-  }
-
-  // If RTCM3 comes in received by Ethernet from Router ####################################
-  if ((send_Data_Via == 1) && (Ntriphotspot == 2) && (Ethernet_running)) { //  Ntrip_begin_Time
-    if (ntrip_c.available()) {         // If RTCM3 comes in received by WIFI
-      Serial1.write(ntrip_c.read());   // read RTCM3  and send from ESP32 16 to simpleRTK RX 1. Antenna = RTCM
-    }
-  }
-
-  // If RTCM3 comes in received by WiFi from Tablett ####################################
-  if ((send_Data_Via == 1) && (Ntriphotspot == 3) && (Ethernet_running)) { //  Ntrip_begin_Time
-    doUDPNtrip_WiFi ();  // If RTCM3 comes in received by WiFi
-  }
-
-  //  receive RTCM3 data by WiFi from Hotspot    ############################################
-  if ((send_Data_Via == 2) && (Ntriphotspot == 2) && (ntrip_from_AgopenGPS == 0) && (WiFi.status() == WL_CONNECTED)) { //  Ntrip_begin_Time
-    if (ntrip_c.available()) {         // If RTCM3 comes in received by WIFI
-      Serial1.write(ntrip_c.read());   // read RTCM3  and send from ESP32 16 to simpleRTK RX 1. Antenna = RTCM
-    }
-  }
-
-  //  receive RTCM3 data by WiFi from Tablet    ############################################
-  if ((send_Data_Via == 3) && (Ntriphotspot == 3) && (ntrip_from_AgopenGPS == 0) && (my_WiFi_Mode == 2)) { //  Ntrip_begin_Time
-    doUDPNtrip_WiFi ();  // If RTCM3 comes in received by WiFi
-  }
-
-  //  receive RTCM3 data by WiFi from Router(AOG)   ########################################
-  if ((send_Data_Via == 2) && (Ntriphotspot == 3)) {
-    doUDPNtrip_WiFi ();  // If RTCM3 comes in received by WiFi
-  }
-
-  //  read NMEA msg from F9P (PVT) and pars them in NMEA_read()   ##############################################
-  if (Serial1.available()) { // If anything comes in Serial1
-    inByte = Serial1.read(); // read it and send for NMEA_PAOGI
-    NMEA_read();
-  }
-
-  //  Send GGA MSG back to Base     ###########################################################################
-  if ((GGA_Send_Back_Time != 0) && ((send_Data_Via == 2) || (Ntriphotspot == 2)))  sendGGA_WiFi();
-  if ((GGA_Send_Back_Time != 0) && (Ntriphotspot == 1))  sendGGA_Eth();
-
-  //  read UBX msg from F9P (heading)    ######################################################################
-  if (Dual_Antenna == 1) {
-    if (Serial2.available()) {         // If anything comes in Serial2
-      incoming_char = Serial2.read();  // ESP32 read RELPOSNED from F9P
-      if (i < 4 && incoming_char == ubxmessage.rawBuffer[i]) {
-        i++;
-      }
-      else if (i > 3) {
-        ubxmessage.rawBuffer[i] = incoming_char;
-        i++;
-      }
-    }
-    if (i > 71) {
-      CK_A = 0;
-      CK_B = 0;
-      for (i = 2; i < 70 ; i++) {
-        CK_A = CK_A + ubxmessage.rawBuffer[i];
-        CK_B = CK_B + CK_A;
-      }
-
-      if (CK_A == ubxmessage.rawBuffer[70] && CK_B == ubxmessage.rawBuffer[71]) {
-
-        if (IMU_MPU6050 > 1) Heading_MPU6050();  // to correct the drift
-        heading_relposned();
-        rollundheading();   // calculate roll        ########################################################
-        PAOGI1_builder();   // built the PAOGI MSG   ########################################################
-      }
-      else {
-        // Serial.println("ACK Checksum Failure: ");
-      }
-      i = 0;
-    }
-  }
-
-  //  LED on == no WiFi or Ethernet, off == WiFi or Ethernet   #########################################
-  /*  if ((send_Data_Via > 0) && (Ntriphotspot_an == 0)) {
-      if ((WiFi.status() == WL_CONNECTED) || (Ethernet_running)) {
-        if ((millis() - WiFi_blink_Time) < 500) {
-          digitalWrite(LED_ntrip_ON, HIGH);
-        }
-        else {
-          digitalWrite(LED_ntrip_ON, LOW);
-          WiFi_blink_Time = millis();
-        }
-      }
-      else {
-        digitalWrite(LED_ntrip_ON, HIGH);
-      }
-    }
-  */
-  //  LED on == no Ntrip from ESP32, off == Ntrip from ESP32   #########################################
-  if ((Ntriphotspot == 1) || (Ntriphotspot == 2)) {
-    if (Ntriphotspot_an == 1) {
-      digitalWrite(LED_ntrip_ON, LOW);
-    }
-    else {
-      //digitalWrite(LED_ntrip_ON, HIGH);
-    }
-  }
-  else {
-    digitalWrite(LED_ntrip_ON, LOW);
-  }
-
-  if (OTA_begin_Time > (millis() - 90000)) {
-    OTA_update = true;
-    ArduinoOTA.handle();   //  update the ESP32 via WiFi.
-  }
-  else  OTA_update = false;
-  if (IMU_MPU6050 > 1) RollHeading_MPU();
+  delay(10);
 }//end main loop
 
 //------------------------------------------------------------------------------------------

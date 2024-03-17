@@ -2,7 +2,7 @@
 
 void scan_WiFi_connections()
 {
-  delay(WiFi_scan_Delay * 1000);
+  delay(10);
   Serial.println("");
   Serial.println("scan start " + String(WiFi_scan_Attempt));
   net_found = 0;
@@ -21,7 +21,7 @@ void scan_WiFi_connections()
     for (int i = 0; i < net_found; ++i) {
       Serial.println(String(i + 1) + ". Netzwerk : " + WiFi.SSID(i));
     }
-    delay(2000);
+    delay(200);
     Serial.println("");
     WiFi_netw_nr = 1;
     for (int i = 0; i < net_found; ++i) {
@@ -78,7 +78,7 @@ void scan_WiFi_connections()
 
 void connectToWiFi() {
   if (!network_found) {
-    delay(10000);
+    delay(100);
     scan_WiFi_connections();
   }
   else {
@@ -104,6 +104,7 @@ void connectToWiFi() {
       //      Serial.print(".");
     }
     if (WiFi.status() != WL_CONNECTED) {
+      delay(10000);
       Serial.println("WiFi not connected");
       Serial.println("WiFi offline ");
       Ntriphotspot = 0;
@@ -126,6 +127,10 @@ void connectToWiFi() {
       Serial.print("IP address: ");
       IPAddress myIP = WiFi.localIP();
       Serial.println(myIP);
+      //after connecting get IP from router -> change it to x.x.x.IP Ending (from settings)
+      myIP[3] = myIPEnding; //set ESP32 IP to x.x.x.myIP_ending
+      Serial.print("changing IP to: ");
+      Serial.println(myIP);
       IPAddress gwIP = WiFi.gatewayIP();
       Serial.print("Gateway IP - Address : ");
       Serial.println(gwIP);
@@ -134,6 +139,10 @@ void connectToWiFi() {
       ipDestination1 = myIP;
       ipDestination1[3] = 255;
       Serial.println(ipDestination1);
+      ipDestination[0] = myIP[0];
+      ipDestination[1] = myIP[1];
+      ipDestination[2] = myIP[2];
+      ipDestination[3] = 255;//set IP to x.x.x.255 according to actual network
 
       digitalWrite(LED_ntrip_ON, LOW);
       my_WiFi_Mode = 1;// WIFI_STA;
@@ -201,7 +210,7 @@ void WiFi_Start_AP() {
 
 //-------------------------------------------------------------------------------------------------
 void OTA_update_ESP32()  {
-  Serial.println("Hallo");
+  Serial.println("Hallo, OTA_update_ESP32");
   ArduinoOTA.setHostname("Dualesp32");
   ArduinoOTA
   .onStart([]() {

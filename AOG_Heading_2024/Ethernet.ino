@@ -1,12 +1,14 @@
 void Eth_Start() {
+  delay(5000);
   Ethernet.init(Eth_CS_PIN);
-  //  delay(50);
+  delay(200);
   Eth_myip[2] = Ethernet_3rd;
   Ethernet.begin(mac, Eth_myip);
   delay(200);
   // Check for Ethernet hardware present
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {
     Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :");
+    Ethernet_running = false;
   }
   else {
     Serial.println("Ethernet hardware found, checking for connection");
@@ -44,13 +46,13 @@ void Eth_Start() {
       Serial.print("Ethernet IP of roof module: "); Serial.println(Ethernet.localIP());
       Serial.print("Ethernet sending to IP: "); Serial.println(Eth_ipDestination);
       //init UPD Port sending to AOG
-      if (Eth_udpPAOGI.begin(portMy)) // portMy
+      if (Eth_udpPAOGI.begin(portMy)) // portMy  portDestination
       {
         Serial.print("Ethernet UDP sending from port: ");
         Serial.println(portMy);
       }
       //init UPD Port getting NTRIP from AOG
-      if (Eth_udpNtrip.begin(AOGNtripPort)) // AOGNtripPort
+      if (Eth_udpNtrip.begin(AOGNtripPort)) // AOGNtripPort localPort
       {
         Serial.print("Ethernet NTRIP UDP listening to port: ");
         Serial.println(AOGNtripPort);
@@ -74,7 +76,7 @@ void Eth_Start() {
 
 //-------------------------------------------------------------------------------------------------
 
-void read_Eth_AGIO() 
+void read_Eth_AGIO()
 {
   src_ip = EthUDPFromAOG.remoteIP();
   EthUDPFromAOG.read(ReplyBufferAGIO, packetLength);
@@ -116,7 +118,5 @@ void read_Eth_AGIO()
     send_IP_back = false;
 
 }
-
-
 
 //-------------------------------------------------------------------------------------------------

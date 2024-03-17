@@ -32,7 +32,8 @@ void  Check_connections() {
       }
       break;
     case 3:  {
-        Ntriphotspot = 3;
+        if (Ntriphotspot != 4)
+          Ntriphotspot = 3;
         Conn = " choice is AP to tablett";
         WiFi_Start_AP();
       }
@@ -45,15 +46,18 @@ void  Check_connections() {
 //  ##########################################################################
 
 void  Start_connections() {
-
   if ((!client_Eth.connected()) && (Ethernet_need_AOG)) {   //  start Ethernetconnection
-    Serial.println("Start Ethernet");
-    Eth_Start();
+    if (!Ethernet_running) {
+      Serial.println("Start Ethernet");
+      Eth_Start();
+    }
     //    if (!client_Eth.connected())  send_Data_Via = 0;         //  if no Ethernetconnection found, send data via USB
   }
   delay(2000);
+  //vTaskDelay(2000);
+
   if (Ntrip_Eth_router) {   //  start Ethernetconnection send data and Ntrip from Router
-    delay(5000);
+    vTaskDelay(10);
     Serial.println("");
     Serial.println("Start Ntrip with Ethernet on Router");
     Ntrip_choice();
@@ -65,12 +69,14 @@ void  Start_connections() {
       Serial.println("");
       Serial.println("Start WiFi");
       Network_built_up();
+      //String taskMessage = "Task Start_connections running on core ";
+      //taskMessage = taskMessage + xPortGetCoreID();
+      //Serial.println(taskMessage);
     }  else  Ntriphotspot_an = 1;
   }
 } // end Check_connection
 
 //**************************************************************************************
-
 void Network_built_up() {
   Ntriphotspot_an = 0;
   digitalWrite(LED_ntrip_ON, HIGH);
@@ -82,7 +88,7 @@ void Network_built_up() {
     delay(1000);
     if ((WiFi.status() == WL_CONNECTED) && (Ntrip_WiFi) && (Ntriphotspot != 3)) {
       Serial.println("");
-      Serial.println("Start Ntrip with WiFi on Router");
+      Serial.println("Start Ntrip with WiFi on Router of Hotspot");
       Ntrip_choice();
       connectToNtrip_WiFi();
     }

@@ -13,11 +13,9 @@ void connectToNtrip_Eth() {
     Serial.println("Requesting SourceTable by Ethernet");
     delay(10);
     Eth_udpNtrip_Router.begin(localPort);
-    //Eth_udpNtrip_Router.begin(8888);
     if (ntrip_e.reqSrcTbl(Ntrip_host, Ntrip_httpPort)) {
       char buffer[1024];
       delay(1000);
-      Serial.println(" Hallo 1 ntrip_e ");
       while (ntrip_e.available()) {
         ntrip_e.readLine(buffer, sizeof(buffer));
         Serial.print(" Buffer by Ethernet : ");
@@ -28,11 +26,9 @@ void connectToNtrip_Eth() {
     else {
       Serial.println("SourceTable request error");
     }
-
     ntrip_e.stop(); //Need to call "stop" function for next request.
     delay(1000);
     Serial.println("Requesting MountPoint's Raw data by Ethernet");
-    //
     delay(1000);
     if (!ntrip_e.reqRaw(Ntrip_host, Ntrip_httpPort, Ntrip_mntpnt, Ntrip_user, Ntrip_passwd)) {
       Serial.println("no ntrip connection by Ethernet");
@@ -85,7 +81,7 @@ void connectToNtrip_WiFi() {
     ntrip_c.stop(); //Need to call "stop" function for next request.
     delay(1000);
     Serial.println("Requesting MountPoint's Raw data");
-    //
+ 
     if (!ntrip_c.reqRaw(Ntrip_host, Ntrip_httpPort, Ntrip_mntpnt, Ntrip_user, Ntrip_passwd)) {
       delay(1000);
       Serial.println("no ntrip connection");
@@ -113,15 +109,15 @@ void connectToNtrip_WiFi() {
 void sendGGA_WiFi() {
   // char GGASatz_send_back[100] = "$GPGGA,051601.650,4812.439,N,01633.778,E,1,12,1.0,0.0,M,0.0,M,,*60";//hc create via www.nmeagen.org
   GGASatz_send_back = "$GPGGA,";
-  (GGASatz_send_back.concat(GGA_time));
+  (GGASatz_send_back.concat(fixTime));
   (GGASatz_send_back.concat("0,"));
   (GGASatz_send_back.concat(GGAnord.substring(0, 8)));
   (GGASatz_send_back.concat(BS));
-  (GGASatz_send_back.concat(GGANordSued));
+  (GGASatz_send_back.concat(latNS));
   (GGASatz_send_back.concat(BS));
   (GGASatz_send_back.concat(GGAeast.substring(0, 9)));
   (GGASatz_send_back.concat(BS));
-  (GGASatz_send_back.concat(GGAWestEast));
+  (GGASatz_send_back.concat(lonEW));
   (GGASatz_send_back.concat(",1,12,1.0,0.0,M,0.0,M,,*"));
   /*      GGASatz_send_back = ("$GPGGA," + GGAZeit + "0," + GGAnord.substring(0, 8) + "," + GGANordSued + "," + GGAeast.substring(0, 9) +
         "," + GGAWestEast + ",1,12,1.0,0.0,M,0.0,M,,*");
@@ -148,15 +144,15 @@ void sendGGA_WiFi() {
 void sendGGA_Eth() {
   // char GGASatz_send_back[100] = "$GPGGA,051601.650,4812.439,N,01633.778,E,1,12,1.0,0.0,M,0.0,M,,*60";//hc create via www.nmeagen.org
   GGASatz_send_back = "$GPGGA,";
-  (GGASatz_send_back.concat(GGA_time));
+  (GGASatz_send_back.concat(fixTime));
   (GGASatz_send_back.concat("0,"));
   (GGASatz_send_back.concat(GGAnord.substring(0, 8)));
   (GGASatz_send_back.concat(BS));
-  (GGASatz_send_back.concat(GGANordSued));
+  (GGASatz_send_back.concat(latNS));
   (GGASatz_send_back.concat(BS));
   (GGASatz_send_back.concat(GGAeast.substring(0, 9)));
   (GGASatz_send_back.concat(BS));
-  (GGASatz_send_back.concat(GGAWestEast));
+  (GGASatz_send_back.concat(lonEW));
   (GGASatz_send_back.concat(",1,12,1.0,0.0,M,0.0,M,,*"));
   /*      GGASatz_send_back = ("$GPGGA," + GGAZeit + "0," + GGAnord.substring(0, 8) + "," + GGANordSued + "," + GGAeast.substring(0, 9) +
         "," + GGAWestEast + ",1,12,1.0,0.0,M,0.0,M,,*");
@@ -178,7 +174,7 @@ void sendGGA_Eth() {
   }
 } // end sendGGA_Eth
 
-//doEthUDPNtrip---------------------------------------------------------------------------------------------
+//doEthUDPNtrip_Router---------------------------------------------------------------------------------------------
 
 void doEthUDPNtrip_Router() {
   unsigned int packetLenght = Eth_udpNtrip_Router.parsePacket();
@@ -186,9 +182,9 @@ void doEthUDPNtrip_Router() {
     Eth_udpNtrip_Router.read(Eth_NTRIP_packetBuffer, packetLenght);
     for (unsigned int ik = 0; ik < packetLenght; ik++)
     {
-      Serial1.write(Eth_NTRIP_packetBuffer[ik]);
+      SerialNmea.write(Eth_NTRIP_packetBuffer[ik]);
     }
-    //    Serial1.println(); //really send data from UART buffer
+    //    SerialNmea.println(); //really send data from UART buffer
   }  // end of Packet
 } // end doEthUDPNtrip_Router
 
@@ -201,9 +197,9 @@ void doEthUDPNtrip() {
     Eth_udpNtrip.read(Eth_NTRIP_packetBuffer, packetLenght);
     for (unsigned int ik = 0; ik < packetLenght; ik++)
     {
-      Serial1.write(Eth_NTRIP_packetBuffer[ik]);
+      SerialNmea.write(Eth_NTRIP_packetBuffer[ik]);
     }
-    //    Serial1.println(); //really send data from UART buffer
+    //    SerialNmea.println(); //really send data from UART buffer
   }  // end of Packet
 } // end doEthUDPNtrip
 
@@ -218,7 +214,7 @@ void doUDPNtrip_WiFi() {
     }
     for (unsigned int i = 0; i < packet.length(); i++)
     {
-      Serial1.write(packet.data()[i]);
+      SerialNmea.write(packet.data()[i]);
     }
   });  // end of onPacket call
 }
