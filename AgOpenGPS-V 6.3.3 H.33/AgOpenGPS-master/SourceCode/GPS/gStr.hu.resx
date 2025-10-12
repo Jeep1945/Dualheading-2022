@@ -1,0 +1,559 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="gsABCurve" xml:space="preserve">
+    <value>AB görbe</value>
+  </data>
+  <data name="gsABline" xml:space="preserve">
+    <value>AB egyenes</value>
+  </data>
+  <data name="gsAbout" xml:space="preserve">
+    <value>A programról...</value>
+  </data>
+  <data name="gsActionHasBeenCancelled" xml:space="preserve">
+    <value>Művelet megszakítva</value>
+  </data>
+  <data name="gsActual" xml:space="preserve">
+    <value>Aktuális</value>
+  </data>
+  <data name="gsAgressiveness" xml:space="preserve">
+    <value>Érzékenység</value>
+  </data>
+  <data name="gsAreYouSure" xml:space="preserve">
+    <value>Biztosan?</value>
+  </data>
+  <data name="gsArea" xml:space="preserve">
+    <value>Terület</value>
+  </data>
+  <data name="gsAutoSteerConfiguration" xml:space="preserve">
+    <value>Automata kormányzás beállítása</value>
+  </data>
+  <data name="gsAutoSteerPort" xml:space="preserve">
+    <value>Automata kormányzás portja</value>
+  </data>
+  <data name="gsBasedOnField" xml:space="preserve">
+    <value>A következő terület alapján:</value>
+  </data>
+  <data name="gsBoundary" xml:space="preserve">
+    <value>Művelési határ</value>
+  </data>
+  <data name="gsBoundaryLineFilesAreCorrupt" xml:space="preserve">
+    <value>Művelési határvonal fájlja sérült</value>
+  </data>
+  <data name="gsBoundaryMenu" xml:space="preserve">
+    <value>Határgörbe</value>
+  </data>
+  <data name="gsButFieldIsLoaded" xml:space="preserve">
+    <value>BUT fájl betöltve</value>
+  </data>
+  <data name="gsCentimeters" xml:space="preserve">
+    <value>Centiméter</value>
+  </data>
+  <data name="gsCharts" xml:space="preserve">
+    <value>Diagramok</value>
+  </data>
+  <data name="gsChooseADifferentField" xml:space="preserve">
+    <value>Válassz egy másik területet</value>
+  </data>
+  <data name="gsChooseADifferentName" xml:space="preserve">
+    <value>Válassz egy másik nevet</value>
+  </data>
+  <data name="gsChooseBuildDifferentone" xml:space="preserve">
+    <value>Válassz vagy készíts egy másikat</value>
+  </data>
+  <data name="gsClose" xml:space="preserve">
+    <value>Becsuk</value>
+  </data>
+  <data name="gsCloseAllWindowsFirst" xml:space="preserve">
+    <value>Először zárja be az összes ablakot</value>
+  </data>
+  <data name="gsCloseFieldFirst" xml:space="preserve">
+    <value>Zárd be a területet először</value>
+  </data>
+  <data name="gsColors" xml:space="preserve">
+    <value>Színek</value>
+  </data>
+  <data name="gsCompletelyDeleteBoundary" xml:space="preserve">
+    <value>Művelési határ teljes törlése</value>
+  </data>
+  <data name="gsContourFileIsCorrupt" xml:space="preserve">
+    <value>Kontúr fájl hibás</value>
+  </data>
+  <data name="gsContourOn" xml:space="preserve">
+    <value>Kontúr be</value>
+  </data>
+  <data name="gsCouldntGenerateValidPath" xml:space="preserve">
+    <value>Nem sikerült az útvonalkészítés</value>
+  </data>
+  <data name="gsCreateABoundaryFirst" xml:space="preserve">
+    <value>Készíts egy határvonalat először</value>
+  </data>
+  <data name="gsCreateNewField" xml:space="preserve">
+    <value>Új terület készítése</value>
+  </data>
+  <data name="gsCurrent" xml:space="preserve">
+    <value>Áramerősség</value>
+  </data>
+  <data name="gsCurveLineFileIsCorrupt" xml:space="preserve">
+    <value>Görbe fájl hibás</value>
+  </data>
+  <data name="gsCurveNotOn" xml:space="preserve">
+    <value>Görbe nincs bekapcsolva</value>
+  </data>
+  <data name="gsDeleteAllContoursAndSections" xml:space="preserve">
+    <value>Összes szekció és kontúr törlése</value>
+  </data>
+  <data name="gsDeleteAppliedArea" xml:space="preserve">
+    <value>Megművelt terület (festés) törlése</value>
+  </data>
+  <data name="gsDeleteBoundaryMapping" xml:space="preserve">
+    <value>Ez a művelet törli a terület határait. Biztosan akarja?</value>
+  </data>
+  <data name="gsDeleteContourPaths" xml:space="preserve">
+    <value>Kontúrvonalak törlése</value>
+  </data>
+  <data name="gsDeleteForSure" xml:space="preserve">
+    <value>Biztosan törli?</value>
+  </data>
+  <data name="gsDirectories" xml:space="preserve">
+    <value>Mappák</value>
+  </data>
+  <data name="gsDirectoryExists" xml:space="preserve">
+    <value>Mappa létezik</value>
+  </data>
+  <data name="gsDistance" xml:space="preserve">
+    <value>Távolság</value>
+  </data>
+  <data name="gsDriveIn" xml:space="preserve">
+    <value>Közeli föld megnyitása</value>
+  </data>
+  <data name="gsDriveThru" xml:space="preserve">
+    <value>Drive Thru</value>
+  </data>
+  <data name="gsDriving" xml:space="preserve">
+    <value>Vezetés</value>
+  </data>
+  <data name="gsEast" xml:space="preserve">
+    <value>Kelet</value>
+  </data>
+  <data name="gsEditABCurve" xml:space="preserve">
+    <value>AB görbe szerkesztése</value>
+  </data>
+  <data name="gsEditABLine" xml:space="preserve">
+    <value>AB vonal szerkesztése</value>
+  </data>
+  <data name="gsEditFieldName" xml:space="preserve">
+    <value>Földnév szerkesztése</value>
+  </data>
+  <data name="gsEncoderCounts" xml:space="preserve">
+    <value>Érték</value>
+    <comment>-4000 és 4000 közötti szám az A/D-tól</comment>
+  </data>
+  <data name="gsEnterCoordinatesForSimulator" xml:space="preserve">
+    <value>Szimulátorhoz koordináták megadása</value>
+  </data>
+  <data name="gsEnterFieldName" xml:space="preserve">
+    <value>Területnév megadása</value>
+  </data>
+  <data name="gsEnterSimCoords" xml:space="preserve">
+    <value>Szimuláció koordinátáinak megadása</value>
+  </data>
+  <data name="gsError" xml:space="preserve">
+    <value>Hiba</value>
+  </data>
+  <data name="gsErrorreadingKML" xml:space="preserve">
+    <value>Nem sikerült a KML fájl olvasása</value>
+  </data>
+  <data name="gsField" xml:space="preserve">
+    <value>Terület</value>
+  </data>
+  <data name="gsFieldFileIsCorrupt" xml:space="preserve">
+    <value>A terület fájl sérült</value>
+    <comment>Területben maradtunk de lehet inkább parcella/mezőkellene?</comment>
+  </data>
+  <data name="gsFieldIsOpen" xml:space="preserve">
+    <value>Terület megnyitva</value>
+  </data>
+  <data name="gsFieldNotOpen" xml:space="preserve">
+    <value>Terület nincs megnyitva</value>
+  </data>
+  <data name="gsFileError" xml:space="preserve">
+    <value>Fájl hiba</value>
+  </data>
+  <data name="gsFlagByLatLon" xml:space="preserve">
+    <value>Zászló koordináták alapján</value>
+  </data>
+  <data name="gsFlagFileIsCorrupt" xml:space="preserve">
+    <value>Zászló fájl sérült</value>
+  </data>
+  <data name="gsForNow" xml:space="preserve">
+    <value>For Now</value>
+    <comment>* Csak most? Ideiglenes?</comment>
+  </data>
+  <data name="gsFromExisting" xml:space="preserve">
+    <value>Meglévőből</value>
+  </data>
+  <data name="gsFromKml" xml:space="preserve">
+    <value>KML Fájlból</value>
+  </data>
+  <data name="gsHeadingChart" xml:space="preserve">
+    <value>Irány grafikon</value>
+  </data>
+  <data name="gsHeadland" xml:space="preserve">
+    <value>Forgó</value>
+  </data>
+  <data name="gsHeadlandForm" xml:space="preserve">
+    <value>Forgó készítése és szerkesztése</value>
+  </data>
+  <data name="gsHelp" xml:space="preserve">
+    <value>Segítség</value>
+  </data>
+  <data name="gsIfWrongDirectionTapVehicle" xml:space="preserve">
+    <value>Rossz irány? Koppintson a Járműre</value>
+  </data>
+  <data name="gsInches" xml:space="preserve">
+    <value>Inch</value>
+    <comment>*</comment>
+  </data>
+  <data name="gsInner" xml:space="preserve">
+    <value>Belső</value>
+  </data>
+  <data name="gsKMH" xml:space="preserve">
+    <value>Km/h</value>
+  </data>
+  <data name="gsLanguage" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="gsMPH" xml:space="preserve">
+    <value>mph</value>
+  </data>
+  <data name="gsMachinePort" xml:space="preserve">
+    <value>Eszköz Port</value>
+  </data>
+  <data name="gsMakeBoundaryContours" xml:space="preserve">
+    <value>Határoló kontúrok készítése</value>
+  </data>
+  <data name="gsManual" xml:space="preserve">
+    <value>Kézi</value>
+  </data>
+  <data name="gsMeters" xml:space="preserve">
+    <value>Méter</value>
+  </data>
+  <data name="gsMissingABLinesFile" xml:space="preserve">
+    <value>Hiányzó AB vonal fájl</value>
+  </data>
+  <data name="gsMissingBoundaryFile" xml:space="preserve">
+    <value>Hiányzó határvonal fájl</value>
+  </data>
+  <data name="gsMissingContourFile" xml:space="preserve">
+    <value>Hiányzó kontúr fájl</value>
+  </data>
+  <data name="gsMissingFlagsFile" xml:space="preserve">
+    <value>Hiányzó zászló fájl</value>
+  </data>
+  <data name="gsMissingSectionFile" xml:space="preserve">
+    <value>Hiányzó szekció fájl</value>
+  </data>
+  <data name="gsN_East" xml:space="preserve">
+    <value>Északkelet</value>
+  </data>
+  <data name="gsN_West" xml:space="preserve">
+    <value>Északnyugat</value>
+  </data>
+  <data name="gsNew" xml:space="preserve">
+    <value>Új</value>
+  </data>
+  <data name="gsNoABLineActive" xml:space="preserve">
+    <value>Nincs akítv AB vonal</value>
+  </data>
+  <data name="gsNoBoundary" xml:space="preserve">
+    <value>Nincs határvonal</value>
+  </data>
+  <data name="gsNoFieldsFound" xml:space="preserve">
+    <value>Nem található terület</value>
+  </data>
+  <data name="gsNoGuidanceLines" xml:space="preserve">
+    <value>Nincs irányvonal</value>
+  </data>
+  <data name="gsNoSettingsWithIMU" xml:space="preserve">
+    <value>Nem állítható IMUval</value>
+  </data>
+  <data name="gsNone" xml:space="preserve">
+    <value>Nincs</value>
+  </data>
+  <data name="gsNoneUsed" xml:space="preserve">
+    <value>Nincs használva</value>
+  </data>
+  <data name="gsNorth" xml:space="preserve">
+    <value>Észak</value>
+  </data>
+  <data name="gsNothingDeleted" xml:space="preserve">
+    <value>Törlés megszakítva</value>
+  </data>
+  <data name="gsOffset" xml:space="preserve">
+    <value>Eltolás</value>
+  </data>
+  <data name="gsOffsetFix" xml:space="preserve">
+    <value>Fix eltolás</value>
+  </data>
+  <data name="gsOpen" xml:space="preserve">
+    <value>Megnyit</value>
+  </data>
+  <data name="gsOuter" xml:space="preserve">
+    <value>Külső</value>
+  </data>
+  <data name="gsOvershootReduction" xml:space="preserve">
+    <value>Kígyózás csökkentése</value>
+  </data>
+  <data name="gsPass" xml:space="preserve">
+    <value>Fogás #</value>
+  </data>
+  <data name="gsPasses" xml:space="preserve">
+    <value>Fogások</value>
+  </data>
+  <data name="gsPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="gsPleaseEnterABLine" xml:space="preserve">
+    <value>Adj meg AB vonalat</value>
+  </data>
+  <data name="gsPressureSensorValueLabel" xml:space="preserve">
+    <value>Nyomás (bar)</value>
+  </data>
+  <data name="gsProblemMakingPath" xml:space="preserve">
+    <value>Probléma az útvonal készítésében</value>
+  </data>
+  <data name="gsProgramWillExitPleaseRestart" xml:space="preserve">
+    <value>A program most kilép, indítsd el újra</value>
+  </data>
+  <data name="gsReallyResetEverything" xml:space="preserve">
+    <value>Tényleg mindent töröl</value>
+  </data>
+  <data name="gsRecord" xml:space="preserve">
+    <value>Rögzít</value>
+  </data>
+  <data name="gsRecordedPathFileIsCorrupt" xml:space="preserve">
+    <value>Rögzített útvonalt tartalmazó fájl sérült</value>
+  </data>
+  <data name="gsRecordedPathMenu" xml:space="preserve">
+    <value>Rögzített útvonal</value>
+  </data>
+  <data name="gsResetAll" xml:space="preserve">
+    <value>Minden törlése</value>
+  </data>
+  <data name="gsResetAllForSure" xml:space="preserve">
+    <value>Biztosan mindent visszaállít?</value>
+  </data>
+  <data name="gsResume" xml:space="preserve">
+    <value>Folytatás</value>
+  </data>
+  <data name="gsS_East" xml:space="preserve">
+    <value>Délkelet</value>
+  </data>
+  <data name="gsS_West" xml:space="preserve">
+    <value>Délnyugat</value>
+  </data>
+  <data name="gsSaveAndReturn" xml:space="preserve">
+    <value>Mentés és visszatérés</value>
+  </data>
+  <data name="gsSaveAs" xml:space="preserve">
+    <value>Mentés másként</value>
+  </data>
+  <data name="gsSentToMachineModule" xml:space="preserve">
+    <value>Eszközmodulra elküldve</value>
+  </data>
+  <data name="gsSetPoint" xml:space="preserve">
+    <value>Pontbeállítás</value>
+  </data>
+  <data name="gsShiftGPSPosition" xml:space="preserve">
+    <value>GPS pozíció elmozdítása (cm)</value>
+  </data>
+  <data name="gsSimulatorOn" xml:space="preserve">
+    <value>Szimulátor bekapcsolva</value>
+  </data>
+  <data name="gsSlowDownBelow" xml:space="preserve">
+    <value>Lassíts le ez alatt</value>
+  </data>
+  <data name="gsSmoothABCurve" xml:space="preserve">
+    <value>AB görbe simítása</value>
+  </data>
+  <data name="gsSort" xml:space="preserve">
+    <value>Rendezés</value>
+  </data>
+  <data name="gsSouth" xml:space="preserve">
+    <value>Dél</value>
+  </data>
+  <data name="gsSpacing" xml:space="preserve">
+    <value>Spacing (cm)</value>
+  </data>
+  <data name="gsStartDeleteABoundary" xml:space="preserve">
+    <value>Határvonal kezdése vagy törlése</value>
+  </data>
+  <data name="gsStartNewField" xml:space="preserve">
+    <value>Új terület kezdése</value>
+  </data>
+  <data name="gsSteerWizard" xml:space="preserve">
+    <value>Kormányzás varázsló</value>
+  </data>
+  <data name="gsStopRecordPauseBoundary" xml:space="preserve">
+    <value>Határvonal rögzítésének megállítása</value>
+  </data>
+  <data name="gsToFile" xml:space="preserve">
+    <value>Fájlba</value>
+  </data>
+  <data name="gsTooFast" xml:space="preserve">
+    <value>Túl gyors</value>
+  </data>
+  <data name="gsTopFieldView" xml:space="preserve">
+    <value>Terület felülnézete</value>
+  </data>
+  <data name="gsTramLines" xml:space="preserve">
+    <value>Művelőút</value>
+  </data>
+  <data name="gsTurnABCurveOn" xml:space="preserve">
+    <value>AB görbe bekapcsolása</value>
+  </data>
+  <data name="gsTurnOnContourOrMakeABLine" xml:space="preserve">
+    <value>AB görbe kontúrjának bekapcsolása</value>
+  </data>
+  <data name="gsUseSelected" xml:space="preserve">
+    <value>Megnyit</value>
+  </data>
+  <data name="gsWebCam" xml:space="preserve">
+    <value>WebKamera</value>
+  </data>
+  <data name="gsWest" xml:space="preserve">
+    <value>Nyugat</value>
+  </data>
+  <data name="gsWindowsStillOpen" xml:space="preserve">
+    <value>A Windows továbbra is nyitva van</value>
+  </data>
+  <data name="gsWizards" xml:space="preserve">
+    <value>Varázslók</value>
+  </data>
+  <data name="v_AboutIntro" xml:space="preserve">
+    <value>https://www.youtube.com/watch?v=iN2cZ8avHag</value>
+  </data>
+  <data name="v_RecordedPathForm" xml:space="preserve">
+    <value>https://www.youtube.com/watch?v=fE3TPRIRSFg</value>
+  </data>
+  <data name="v_SteerSettingsForm" xml:space="preserve">
+    <value>https://www.youtube.com/watch?v=3SdvYgx8HHc</value>
+  </data>
+</root>

@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="gsABCurve" xml:space="preserve">
+    <value>AB Izliekta</value>
+  </data>
+  <data name="gsABline" xml:space="preserve">
+    <value>AB Līnija</value>
+  </data>
+  <data name="gsAbout" xml:space="preserve">
+    <value>Par...</value>
+  </data>
+  <data name="gsActionHasBeenCancelled" xml:space="preserve">
+    <value>Darbība ir atcelta</value>
+  </data>
+  <data name="gsActual" xml:space="preserve">
+    <value>Faktiskais</value>
+  </data>
+  <data name="gsAgressiveness" xml:space="preserve">
+    <value>Agresivitāte</value>
+  </data>
+  <data name="gsAreYouSure" xml:space="preserve">
+    <value>Vai tu esi pārliecināts ?</value>
+  </data>
+  <data name="gsArea" xml:space="preserve">
+    <value>Platība</value>
+  </data>
+  <data name="gsAutoSteerConfiguration" xml:space="preserve">
+    <value>Automātiskās stūrēšanas konfigurācija</value>
+  </data>
+  <data name="gsAutoSteerPort" xml:space="preserve">
+    <value>Automātiskās stūrēšanas ports</value>
+  </data>
+  <data name="gsBasedOnField" xml:space="preserve">
+    <value>Pamatojoties  no lauka:</value>
+  </data>
+  <data name="gsBoundary" xml:space="preserve">
+    <value>Robeža</value>
+  </data>
+  <data name="gsBoundaryLineFilesAreCorrupt" xml:space="preserve">
+    <value>Robežlīniju fails ir bojāts</value>
+  </data>
+  <data name="gsBoundaryMenu" xml:space="preserve">
+    <value>Robežas kontūra</value>
+  </data>
+  <data name="gsButFieldIsLoaded" xml:space="preserve">
+    <value>Bet, lauks ir ielādēts</value>
+  </data>
+  <data name="gsCentimeters" xml:space="preserve">
+    <value>Centimetrs</value>
+  </data>
+  <data name="gsCharts" xml:space="preserve">
+    <value>Diagrammas</value>
+  </data>
+  <data name="gsChooseADifferentField" xml:space="preserve">
+    <value>Izvēlieties citu lauku</value>
+  </data>
+  <data name="gsChooseADifferentName" xml:space="preserve">
+    <value>Izvēlieties citu nosaukumu</value>
+  </data>
+  <data name="gsChooseBuildDifferentone" xml:space="preserve">
+    <value>Izvēlieties vai izveidojiet citu</value>
+  </data>
+  <data name="gsClose" xml:space="preserve">
+    <value>Slēgt</value>
+  </data>
+  <data name="gsCloseFieldFirst" xml:space="preserve">
+    <value>Vispirms aizveriet lauku</value>
+  </data>
+  <data name="gsColors" xml:space="preserve">
+    <value>Krāsas</value>
+  </data>
+  <data name="gsCompletelyDeleteBoundary" xml:space="preserve">
+    <value>Pilnībā dzēst robežu</value>
+  </data>
+  <data name="gsContourFileIsCorrupt" xml:space="preserve">
+    <value>Kontūras fails ir bojāts</value>
+  </data>
+  <data name="gsContourOn" xml:space="preserve">
+    <value>Kontūra ieslēgta</value>
+  </data>
+  <data name="gsCouldntGenerateValidPath" xml:space="preserve">
+    <value>Nav derīga ceļa</value>
+  </data>
+  <data name="gsCreateABoundaryFirst" xml:space="preserve">
+    <value>Vispirms izveidojiet robežu</value>
+  </data>
+  <data name="gsCreateNewField" xml:space="preserve">
+    <value>Izveidot jaunu lauku</value>
+  </data>
+  <data name="gsCurrent" xml:space="preserve">
+    <value>Strāva</value>
+  </data>
+  <data name="gsCurveLineFileIsCorrupt" xml:space="preserve">
+    <value>Līknes līnijas fails ir bojāts</value>
+  </data>
+  <data name="gsCurveNotOn" xml:space="preserve">
+    <value>Līkne nav IESLĒGTA</value>
+  </data>
+  <data name="gsDeleteAllContoursAndSections" xml:space="preserve">
+    <value>Dzēst visas sadaļas un kontūras</value>
+  </data>
+  <data name="gsDeleteAppliedArea" xml:space="preserve">
+    <value>Dzēst apstrādāto apgabalu</value>
+  </data>
+  <data name="gsDeleteContourPaths" xml:space="preserve">
+    <value>Dzēst kontūru ceļus</value>
+  </data>
+  <data name="gsDeleteForSure" xml:space="preserve">
+    <value>Izdzēst, esi pārliezināts?</value>
+  </data>
+  <data name="gsDirectories" xml:space="preserve">
+    <value>Katalogi</value>
+  </data>
+  <data name="gsDirectoryExists" xml:space="preserve">
+    <value>Katalogs pastāv</value>
+  </data>
+  <data name="gsDistance" xml:space="preserve">
+    <value>Attālums</value>
+  </data>
+  <data name="gsDriveIn" xml:space="preserve">
+    <value>Iebraukt</value>
+  </data>
+  <data name="gsDriveThru" xml:space="preserve">
+    <value>Brauc cauri</value>
+  </data>
+  <data name="gsDriving" xml:space="preserve">
+    <value>Braukšana</value>
+  </data>
+  <data name="gsEast" xml:space="preserve">
+    <value>Austrumi</value>
+  </data>
+  <data name="gsEditABCurve" xml:space="preserve">
+    <value>Rediģēt AB līkni</value>
+  </data>
+  <data name="gsEditABLine" xml:space="preserve">
+    <value>Rediģēt AB līniju</value>
+  </data>
+  <data name="gsEditFieldName" xml:space="preserve">
+    <value>Rediģēt AB Rediģēt lauka nosaukumu</value>
+  </data>
+  <data name="gsEncoderCounts" xml:space="preserve">
+    <value>Skaitās</value>
+  </data>
+  <data name="gsEnterCoordinatesForSimulator" xml:space="preserve">
+    <value>Ievadiet koordinātes simulatoram</value>
+  </data>
+  <data name="gsEnterFieldName" xml:space="preserve">
+    <value>Ievadiet lauka nosaukumu</value>
+  </data>
+  <data name="gsEnterSimCoords" xml:space="preserve">
+    <value>Ievadiet Sim Coords</value>
+  </data>
+  <data name="gsError" xml:space="preserve">
+    <value>Kļūda</value>
+  </data>
+  <data name="gsErrorreadingKML" xml:space="preserve">
+    <value>Lasot KML, radās kļūda</value>
+  </data>
+  <data name="gsField" xml:space="preserve">
+    <value>Lauks</value>
+  </data>
+  <data name="gsFieldFileIsCorrupt" xml:space="preserve">
+    <value>Lauka fails ir bojāts</value>
+  </data>
+  <data name="gsFieldIsOpen" xml:space="preserve">
+    <value>Lauks ir atvērts</value>
+  </data>
+  <data name="gsFieldNotOpen" xml:space="preserve">
+    <value>Lauks nav atvērts</value>
+  </data>
+  <data name="gsFileError" xml:space="preserve">
+    <value>Faila kļūda</value>
+  </data>
+  <data name="gsFlagByLatLon" xml:space="preserve">
+    <value>Karogs ar Lat Lon</value>
+  </data>
+  <data name="gsFlagFileIsCorrupt" xml:space="preserve">
+    <value>Bojāts karoga fails</value>
+  </data>
+  <data name="gsForNow" xml:space="preserve">
+    <value>Tagad</value>
+  </data>
+  <data name="gsFromExisting" xml:space="preserve">
+    <value>No esošā</value>
+  </data>
+  <data name="gsFromKml" xml:space="preserve">
+    <value>No KML</value>
+  </data>
+  <data name="gsHeadingChart" xml:space="preserve">
+    <value>Heading Chart</value>
+  </data>
+  <data name="gsHeadland" xml:space="preserve">
+    <value>Laukmala</value>
+  </data>
+  <data name="gsHeadlandForm" xml:space="preserve">
+    <value>Izveidojiet un rediģējiet laukmalu</value>
+  </data>
+  <data name="gsHelp" xml:space="preserve">
+    <value>Palīdzība</value>
+  </data>
+  <data name="gsIfWrongDirectionTapVehicle" xml:space="preserve">
+    <value>Ja nepareizs virziens, pieskarieties transportlīdzeklim</value>
+  </data>
+  <data name="gsInches" xml:space="preserve">
+    <value>colla</value>
+  </data>
+  <data name="gsInner" xml:space="preserve">
+    <value>Iekšējais</value>
+  </data>
+  <data name="gsKMH" xml:space="preserve">
+    <value>kmh</value>
+  </data>
+  <data name="gsLanguage" xml:space="preserve">
+    <value>Valoda</value>
+  </data>
+  <data name="gsMPH" xml:space="preserve">
+    <value>mph</value>
+  </data>
+  <data name="gsMachinePort" xml:space="preserve">
+    <value>Mašīnas ports</value>
+  </data>
+  <data name="gsMakeBoundaryContours" xml:space="preserve">
+    <value>Izveidojiet robežu kontūras</value>
+  </data>
+  <data name="gsManual" xml:space="preserve">
+    <value>Manuāli</value>
+  </data>
+  <data name="gsMeters" xml:space="preserve">
+    <value>Metri</value>
+  </data>
+  <data name="gsMissingABLinesFile" xml:space="preserve">
+    <value>Trūkst AB Līnijas faila</value>
+  </data>
+  <data name="gsMissingBoundaryFile" xml:space="preserve">
+    <value>Trūkst Robežas faila</value>
+  </data>
+  <data name="gsMissingContourFile" xml:space="preserve">
+    <value>Trūkst Kontūras faila</value>
+  </data>
+  <data name="gsMissingFlagsFile" xml:space="preserve">
+    <value>Trūkst Karoga faila</value>
+  </data>
+  <data name="gsMissingSectionFile" xml:space="preserve">
+    <value>Trūkst Sekciju faila</value>
+  </data>
+  <data name="gsN_East" xml:space="preserve">
+    <value>Z Austrumi</value>
+  </data>
+  <data name="gsN_West" xml:space="preserve">
+    <value>Z Rietumi</value>
+  </data>
+  <data name="gsNew" xml:space="preserve">
+    <value>Jauns</value>
+  </data>
+  <data name="gsNoABLineActive" xml:space="preserve">
+    <value>Nav AB Līnija aktīva</value>
+  </data>
+  <data name="gsNoBoundary" xml:space="preserve">
+    <value>Nav robežu</value>
+  </data>
+  <data name="gsNoFieldsFound" xml:space="preserve">
+    <value>Nav atrasts neviens lauks</value>
+  </data>
+  <data name="gsNoGuidanceLines" xml:space="preserve">
+    <value>Nav navigācija līniju</value>
+  </data>
+  <data name="gsNoSettingsWithIMU" xml:space="preserve">
+    <value>Nav iestatījumu ar IMU</value>
+  </data>
+  <data name="gsNone" xml:space="preserve">
+    <value>Nav</value>
+  </data>
+  <data name="gsNoneUsed" xml:space="preserve">
+    <value>Nav lietots</value>
+  </data>
+  <data name="gsNorth" xml:space="preserve">
+    <value>Ziemeļi</value>
+  </data>
+  <data name="gsNothingDeleted" xml:space="preserve">
+    <value>Nekas nav dzēsts</value>
+  </data>
+  <data name="gsOffset" xml:space="preserve">
+    <value>Nobīde</value>
+  </data>
+  <data name="gsOffsetFix" xml:space="preserve">
+    <value>Nobīdes labojums</value>
+  </data>
+  <data name="gsOpen" xml:space="preserve">
+    <value>Atvērt</value>
+  </data>
+  <data name="gsOuter" xml:space="preserve">
+    <value>Ārējais</value>
+  </data>
+  <data name="gsOvershootReduction" xml:space="preserve">
+    <value>Pārbrauciena samazināšana</value>
+  </data>
+  <data name="gsPass" xml:space="preserve">
+    <value>Gājiens #</value>
+  </data>
+  <data name="gsPasses" xml:space="preserve">
+    <value>Gājieni</value>
+  </data>
+  <data name="gsPause" xml:space="preserve">
+    <value>Pauze</value>
+  </data>
+  <data name="gsPleaseEnterABLine" xml:space="preserve">
+    <value>Lūdzu, ievadiet AB Līniju</value>
+  </data>
+  <data name="gsPressureSensorValueLabel" xml:space="preserve">
+    <value>Spiediens (bar)</value>
+  </data>
+  <data name="gsProblemMakingPath" xml:space="preserve">
+    <value>Problēma veidojot ceļu</value>
+  </data>
+  <data name="gsProgramWillExitPleaseRestart" xml:space="preserve">
+    <value>Programma tiks aizvērta, lūdzu, restartējiet</value>
+  </data>
+  <data name="gsReallyResetEverything" xml:space="preserve">
+    <value>Tiešām atiestatīt visu</value>
+  </data>
+  <data name="gsRecord" xml:space="preserve">
+    <value>Ieraksts</value>
+  </data>
+  <data name="gsRecordedPathFileIsCorrupt" xml:space="preserve">
+    <value>Ierakstītais ceļa fails ir bojāts</value>
+  </data>
+  <data name="gsRecordedPathMenu" xml:space="preserve">
+    <value>Ierakstītais ceļš</value>
+  </data>
+  <data name="gsResetAll" xml:space="preserve">
+    <value>AtiestatīAtiestatīt visu</value>
+  </data>
+  <data name="gsResetAllForSure" xml:space="preserve">
+    <value>Atiestatīt visu, Esi pārliecināts?</value>
+  </data>
+  <data name="gsResume" xml:space="preserve">
+    <value>Turpināt</value>
+  </data>
+  <data name="gsS_East" xml:space="preserve">
+    <value>DAustrumi</value>
+  </data>
+  <data name="gsS_West" xml:space="preserve">
+    <value>DRietumi</value>
+  </data>
+  <data name="gsSaveAndReturn" xml:space="preserve">
+    <value>Saglabāt un atgriezt</value>
+  </data>
+  <data name="gsSaveAs" xml:space="preserve">
+    <value>Saglabāt kā</value>
+  </data>
+  <data name="gsSentToMachineModule" xml:space="preserve">
+    <value>Nosūtīts uz mašīnas moduli</value>
+  </data>
+  <data name="gsSetPoint" xml:space="preserve">
+    <value>Iestatīšanas punkts</value>
+  </data>
+  <data name="gsShiftGPSPosition" xml:space="preserve">
+    <value>GPS pozīcijas maiņa (cm)</value>
+  </data>
+  <data name="gsSimulatorOn" xml:space="preserve">
+    <value>Simulators ieslēgts</value>
+  </data>
+  <data name="gsSlowDownBelow" xml:space="preserve">
+    <value>Palēnināt zemāk</value>
+  </data>
+  <data name="gsSmoothABCurve" xml:space="preserve">
+    <value>Nogludināt AB līkni</value>
+  </data>
+  <data name="gsSort" xml:space="preserve">
+    <value>Kārtot</value>
+  </data>
+  <data name="gsSouth" xml:space="preserve">
+    <value>Dienvidi</value>
+  </data>
+  <data name="gsSpacing" xml:space="preserve">
+    <value>Atstatums (cm)</value>
+  </data>
+  <data name="gsStartDeleteABoundary" xml:space="preserve">
+    <value>Sāciet vai dzēsiet robežu</value>
+  </data>
+  <data name="gsStartNewField" xml:space="preserve">
+    <value>Sākt jaunu lauku</value>
+  </data>
+  <data name="gsSteerWizard" xml:space="preserve">
+    <value>Stūrēšanas iestatīšana</value>
+  </data>
+  <data name="gsStopRecordPauseBoundary" xml:space="preserve">
+    <value>Apturēt ierakstīšanu pauzēt robežu</value>
+  </data>
+  <data name="gsToFile" xml:space="preserve">
+    <value>Uz failu</value>
+  </data>
+  <data name="gsTooFast" xml:space="preserve">
+    <value>Par ātru</value>
+  </data>
+  <data name="gsTopFieldView" xml:space="preserve">
+    <value>Augšējais lauka skats</value>
+  </data>
+  <data name="gsTramLines" xml:space="preserve">
+    <value>Tehnoloģiskās līnijas</value>
+  </data>
+  <data name="gsTurnABCurveOn" xml:space="preserve">
+    <value>Ieslēdziet AB līkni</value>
+  </data>
+  <data name="gsTurnOnContourOrMakeABLine" xml:space="preserve">
+    <value>Ieslēdziet AB līnijas kontūru</value>
+  </data>
+  <data name="gsUseSelected" xml:space="preserve">
+    <value>Izmantojiet atlasīto</value>
+  </data>
+  <data name="gsWebCam" xml:space="preserve">
+    <value>Tīmekļa kamera</value>
+  </data>
+  <data name="gsWest" xml:space="preserve">
+    <value>Rietumi</value>
+  </data>
+  <data name="gsWizards" xml:space="preserve">
+    <value>Wizards</value>
+  </data>
+  <data name="gsXTEChart" xml:space="preserve">
+    <value>XTE Diagramma</value>
+  </data>
+  <data name="v_AboutIntro" xml:space="preserve">
+    <value>https://www.youtube.com/watch?v=iN2cZ8avHag</value>
+  </data>
+  <data name="v_RecordedPathForm" xml:space="preserve">
+    <value>https://www.youtube.com/watch?v=fE3TPRIRSFg</value>
+  </data>
+  <data name="v_SteerSettingsForm" xml:space="preserve">
+    <value>https://www.youtube.com/watch?v=3SdvYgx8HHc</value>
+  </data>
+</root>
