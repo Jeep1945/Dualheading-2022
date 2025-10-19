@@ -762,7 +762,7 @@ void loop() {
         ubxmessage.rawBuffer[i] = incoming_char;
         i++;
       }
-    }
+    
     if (i > 71) {
       CK_A = 0;
       CK_B = 0;
@@ -782,10 +782,12 @@ void loop() {
         // Serial.println("ACK Checksum Failure: ");
       }
       i = 0;
-    }
+    
   }
   else {
     Print_NMEA();
+  }
+	}
   }
   if ((send_amatron_nmea == 1) && (Dual_Antenna == 1)) Print_NMEA();
 

@@ -199,8 +199,8 @@ void sendGGA_Eth() {
 
 void doEthUDPNtrip() {
   unsigned int packetLenght = Eth_udpNtrip.parsePacket();
-  Serial.println("Hallo1");
-  Serial.println(packetLenght);
+  //Serial.println("Hallo1");
+  //Serial.println(packetLenght);
   if (packetLenght > 0) {
     Eth_udpNtrip.read(Eth_NTRIP_packetBuffer, packetLenght);
     EthUDPFromAOG.beginPacket(Eth_ipDestination, ToolntripPort);
